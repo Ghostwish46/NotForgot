@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom images for SplashScreen-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+    <item android:drawable="@drawable/splash_back"></item>
+    <item>
+        <bitmap
+            android:gravity="fill_horizontal|center_vertical"
+            android:src="@drawable/icon_logo"></bitmap>
+    </item>
+</layer-list>
