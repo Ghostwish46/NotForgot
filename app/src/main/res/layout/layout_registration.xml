@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_cornered_container"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_normal"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.498"
+    tools:showIn="@layout/activity_login">
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/HeaderTextView"
+        android:text="@string/header_registration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextRegistrationName"
+        android:inputType="textPersonName"
+        android:hint="@string/hint_name"
+        style="@style/InputEditText" />
+
+    <EditText
+        android:id="@+id/editTextRegistrationMail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_mail"
+        style="@style/InputEditText"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/editTextRegistrationPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_password"
+        style="@style/InputEditText"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/editTextRegistrationRePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_re_password"
+        style="@style/InputEditText"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/buttonRegistrationAction"
+        style="@style/BrightButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/header_registration" />
+
+    <Button
+        android:id="@+id/buttonRegistrationLogin"
+        style="@style/GrayButton"
+        android:text="@string/header_login" />
+</LinearLayout>

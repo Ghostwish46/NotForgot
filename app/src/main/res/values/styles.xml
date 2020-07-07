@@ -6,11 +6,60 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="editTextStyle">@style/InputEditText</item>
+        <item name="buttonStyle">@style/BrightButton</item>
     </style>
 
     <!--Child theme for SplashScreen-->
     <style name="AppTheme.Launcher" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@drawable/drawable_splash_screen</item>
+    </style>
+
+    <style name="AppTheme.Login" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/drawable_splash_screen</item>
+    </style>
+
+
+    <style name="background_constraint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:padding">@dimen/margin_normal</item>
+    </style>
+
+    <style name="HeaderTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="InputEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/background_edit_text</item>
+        <item name="android:ems">10</item>
+        <item name="android:inputType">textEmailAddress</item>
+        <item name="android:padding">@dimen/margin_small</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="BrightButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
+        <item name="android:background">@drawable/background_bright_button</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="GrayButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
+        <item name="android:background">@drawable/background_gray_button</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorBlack</item>
     </style>
 
 </resources>
