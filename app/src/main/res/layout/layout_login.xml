@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<!--<data>
+    <variable
+        name="user"
+        type="dev.ghost.notforgotapp.models.User" />
+</data>-->
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="0dp"
@@ -25,7 +31,9 @@
     <EditText
         android:id="@+id/editTextLoginMail"
         style="@style/InputEditText"
-        android:hint="@string/hint_mail" />
+        android:hint="@string/hint_mail"
+        />
+    <!---->android:text="@{user.mail}"
 
     <EditText
         android:id="@+id/editTexLoginPassword"
@@ -49,3 +57,4 @@
         style="@style/GrayButton"
         android:text="@string/header_registration" />
 </LinearLayout>
+</layout>
