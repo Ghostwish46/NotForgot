@@ -3,7 +3,7 @@
     <data>
         <variable
             name="user"
-            type="dev.ghost.notforgotapp.models.User" />
+            type="dev.ghost.notforgotapp.entities.User" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,8 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:user="@={user}"
         />
-    <!--        app:user="@{user}"-->
 
     <include
         android:id="@+id/includeLogin"
@@ -29,8 +29,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:user="@={user}"
         />
-    <!--        app:user="@{user}"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

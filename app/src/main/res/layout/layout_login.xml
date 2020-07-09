@@ -1,60 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-<!--<data>
-    <variable
-        name="user"
-        type="dev.ghost.notforgotapp.models.User" />
-</data>-->
-<LinearLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:background="@drawable/background_cornered_container"
-    android:orientation="vertical"
-    android:padding="@dimen/margin_normal"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.498"
-    tools:showIn="@layout/activity_login">
-
-    <TextView
-        android:id="@+id/textView"
-        style="@style/HeaderTextView"
-        android:text="@string/header_login"
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_cornered_container"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        tools:showIn="@layout/activity_login">
 
-    <EditText
-        android:id="@+id/editTextLoginMail"
-        style="@style/InputEditText"
-        android:hint="@string/hint_mail"
-        />
-    <!---->android:text="@{user.mail}"
+        <TextView
+            android:id="@+id/textView"
+            style="@style/HeaderTextView"
+            android:text="@string/header_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTexLoginPassword"
-        style="@style/InputEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_normal"
-        android:ems="10"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword" />
+        <EditText
+            android:id="@+id/editTextLoginMail"
+            style="@style/InputEditText"
+            android:hint="@string/hint_mail"
+            android:text="@={user.mail}"
+            />
 
-    <Button
-        android:id="@+id/buttonLoginAction"
-        style="@style/BrightButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_login" />
+        <EditText
+            android:id="@+id/editTexLoginPassword"
+            style="@style/InputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:ems="10"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:text="@={user.password}"/>
 
-    <Button
-        android:id="@+id/buttonLoginRegistration"
-        style="@style/GrayButton"
-        android:text="@string/header_registration" />
-</LinearLayout>
+        <Button
+            android:id="@+id/buttonLoginAction"
+            style="@style/BrightButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/header_login" />
+
+        <Button
+            android:id="@+id/buttonLoginRegistration"
+            style="@style/GrayButton"
+            android:text="@string/header_registration" />
+    </LinearLayout>
+    <data>
+    <variable
+        name="user"
+        type="dev.ghost.notforgotapp.entities.User" />
+</data>
 </layout>
