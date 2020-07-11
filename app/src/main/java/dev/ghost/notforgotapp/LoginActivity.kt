@@ -13,6 +13,7 @@ import dev.ghost.notforgotapp.components.AppComponent
 import dev.ghost.notforgotapp.databinding.ActivityLoginBinding
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
+import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import dev.ghost.notforgotapp.viewmodels.RegistrationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class LoginActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var sharedPreferences: SharedPreferences
+    lateinit var sharedPreferences: SharedPreferencesStorage
 
     //ApiService instance.
     lateinit var mApiService: ApiService
@@ -49,8 +50,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme_Login)
 
-
-//        App().getComponent().injectsMainActivity(this)
 
         registrationViewModel = ViewModelProvider(this)
             .get(RegistrationViewModel::class.java)

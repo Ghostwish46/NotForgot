@@ -8,6 +8,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
+import dev.ghost.notforgotapp.storage.Storage
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 abstract class StorageModule {
 
     @Binds
-    abstract fun provideStorage(storage: SharedPreferencesStorage): SharedPreferencesStorage
+    abstract fun provideStorage(storage: SharedPreferencesStorage): Storage
 
 //    @Singleton
 //    @Provides
