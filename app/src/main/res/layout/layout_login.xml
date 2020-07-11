@@ -46,12 +46,14 @@
             style="@style/BrightButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/header_login" />
+            android:text="@string/header_login"
+            android:onClick="loginAction"/>
 
         <Button
             android:id="@+id/buttonLoginRegistration"
             style="@style/GrayButton"
-            android:text="@string/header_registration" />
+            android:text="@string/header_registration"
+            android:onClick="switchLoginRegistration"/>
     </LinearLayout>
     <data>
     <variable
