@@ -4,17 +4,19 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import javax.inject.Inject
 import javax.inject.Singleton
 
 
 @Module
-class StorageModule(private val context: Context) {
+abstract class StorageModule {
 
-    @Provides
-    fun providesAppContext() = context
+    @Binds
+    abstract fun provideStorage(storage: SharedPreferencesStorage): SharedPreferencesStorage
 
 //    @Singleton
 //    @Provides
