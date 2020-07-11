@@ -11,17 +11,14 @@ import javax.inject.Singleton
 
 
 @Module
-public class StorageModule {
+class StorageModule(private val context: Context) {
 
-    private var context: Context? = null
-
-    open fun storageModule(context: Context?) {
-        this.context = context
-    }
-
-    @Singleton
     @Provides
-    open fun provideSharedPrefences(): SharedPreferences {
-        return context!!.getSharedPreferences("NotForgot", Context.MODE_PRIVATE)
-    }
+    fun providesAppContext() = context
+
+//    @Singleton
+//    @Provides
+//    open fun provideSharedPreferences(): SharedPreferences {
+//        return context.getSharedPreferences("NotForgot", Context.MODE_PRIVATE)
+//    }
 }

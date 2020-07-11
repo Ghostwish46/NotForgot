@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         bindingUser.user = registrationViewModel.currentUser
         bindingUser.lifecycleOwner = this
 
-        (application as App).appComponent.injectsMainActivity(this)
+        (applicationContext as App).appComponent.injectsMainActivity(this)
     }
 
     // Function for view's visibility changing.
