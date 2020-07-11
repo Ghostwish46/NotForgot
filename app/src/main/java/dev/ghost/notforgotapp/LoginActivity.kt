@@ -1,33 +1,29 @@
 package dev.ghost.notforgotapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import dev.ghost.notforgotapp.components.AppComponent
 import dev.ghost.notforgotapp.databinding.ActivityLoginBinding
-import dev.ghost.notforgotapp.entities.User
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.viewmodels.RegistrationViewModel
-import kotlinx.android.synthetic.main.layout_login.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.Exception
+import javax.inject.Inject
 
 
 class LoginActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     //ApiService instance.
     lateinit var mApiService: ApiService
@@ -53,6 +49,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme_Login)
 
+
+//        App().getComponent().injectsMainActivity(this)
+
         registrationViewModel = ViewModelProvider(this)
             .get(RegistrationViewModel::class.java)
 
@@ -66,6 +65,8 @@ class LoginActivity : AppCompatActivity() {
 
         bindingUser.user = registrationViewModel.currentUser
         bindingUser.lifecycleOwner = this
+
+        (application as App).appComponent.injectsMainActivity(this)
     }
 
     // Function for view's visibility changing.
@@ -86,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
             )
             try {
                 val response = loginRequest.await()
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     Toast.makeText(this@LoginActivity, response.body()?.apiToken,
                         LENGTH_LONG).show()
                 } else {
