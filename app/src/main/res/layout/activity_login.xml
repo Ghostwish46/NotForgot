@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".LoginActivity"
-    style="@style/background_constraint">
+    style="@style/BackgroundConstraint">
 
     <include
         android:id="@+id/includeRegistration"

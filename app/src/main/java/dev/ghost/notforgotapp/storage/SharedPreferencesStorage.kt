@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import javax.inject.Inject
 
- class SharedPreferencesStorage @Inject constructor(context: Context) : Storage
+class SharedPreferencesStorage @Inject constructor(context: Context) : Storage
 {
     private val sharedPreferences = context.getSharedPreferences("Dagger", Context.MODE_PRIVATE)
 

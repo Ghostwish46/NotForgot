@@ -1,20 +1,20 @@
 package dev.ghost.notforgotapp
 
-import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import dev.ghost.notforgotapp.components.AppComponent
 import dev.ghost.notforgotapp.databinding.ActivityLoginBinding
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
+import dev.ghost.notforgotapp.main.MainActivity
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import dev.ghost.notforgotapp.viewmodels.RegistrationViewModel
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -32,20 +32,6 @@ class LoginActivity : AppCompatActivity() {
     //ViewModel instance.
     private lateinit var registrationViewModel: RegistrationViewModel
 
-    //Layout for login actions.
-    private val linearLogin: LinearLayout
-        get() {
-            val mLinearLogin: LinearLayout = findViewById(R.id.includeLogin)
-            return mLinearLogin
-        }
-
-    //Layout for Registration actions.
-    private val linearRegistration: LinearLayout
-        get() {
-            val mLinearRegistration: LinearLayout = findViewById(R.id.includeRegistration)
-            return mLinearRegistration
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme_Login)
@@ -59,13 +45,14 @@ class LoginActivity : AppCompatActivity() {
         val bindingUser: ActivityLoginBinding = DataBindingUtil
             .setContentView(this, R.layout.activity_login)
 
-        registrationViewModel.currentUser.mail = "tester@gmail.com"
-        registrationViewModel.currentUser.password = "qwerty1111"
+        // Fill test data.
+        registrationViewModel.inflateUser()
 
         bindingUser.user = registrationViewModel.currentUser
         bindingUser.lifecycleOwner = this
 
-        (applicationContext as App).appComponent.injectsMainActivity(this)
+        (applicationContext as App).appComponent.injectsLoginActivity(this)
+
     }
 
     // Function for view's visibility changing.
@@ -80,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
     // Actions on login click.
     fun loginAction(view: View) {
         GlobalScope.launch(Dispatchers.Main) {
-            val loginRequest = mApiService.registrationPost(
+            val loginRequest = mApiService.registrationPostAsync(
                 registrationViewModel.currentUser.mail,
                 registrationViewModel.currentUser.password
             )
@@ -89,6 +76,11 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Toast.makeText(this@LoginActivity, response.body()?.apiToken,
                         LENGTH_LONG).show()
+                    sharedPreferences.getEditor()
+                        .putString("token", response.body()?.apiToken)
+                        .apply()
+                    val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intentMain)
                 } else {
                     Toast.makeText(this@LoginActivity, response.errorBody()?.string(),
                         LENGTH_LONG).show()
@@ -101,8 +93,8 @@ class LoginActivity : AppCompatActivity() {
 
     // Switch visibility of login/registration layout.
     fun switchLoginRegistration(view: View) {
-        linearLogin.changeVisibility()
-        linearRegistration.changeVisibility()
+        includeLogin.changeVisibility()
+        includeRegistration.changeVisibility()
     }
 
     // Actions on registration click.
