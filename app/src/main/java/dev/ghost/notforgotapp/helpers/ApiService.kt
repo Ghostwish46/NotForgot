@@ -1,11 +1,10 @@
 package dev.ghost.notforgotapp.helpers
 
 import dev.ghost.notforgotapp.entities.Category
-import dev.ghost.notforgotapp.entities.Priorty
+import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.entities.User
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -18,12 +17,15 @@ interface ApiService {
     ): Deferred<Response<User>>
 
     @GET("tasks")
-    fun getTasksAsync(@Header("api_token") token:String):Deferred<List<Task>>
+    @Headers("Accept:application/json")
+    fun getTasksAsync(@Query("api_token") token:String):Deferred<List<Task>>
 
     @GET("priorities")
-    fun getPrioritiesAsync(@Header("api_token") token:String):Deferred<List<Priorty>>
+    @Headers("Accept:application/json")
+    fun getPrioritiesAsync(@Query("api_token") token:String):Deferred<List<Priority>>
 
     @GET("categories")
-    fun getCategoriesAsync(@Header("api_token") token:String):Deferred<List<Category>>
+    @Headers("Accept:application/json")
+    fun getCategoriesAsync(@Query("api_token") token:String):Deferred<List<Category>>
 
 }

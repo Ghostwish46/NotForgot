@@ -37,6 +37,8 @@ class LoginActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme_Login)
 
 
+
+
         registrationViewModel = ViewModelProvider(this)
             .get(RegistrationViewModel::class.java)
 
@@ -52,6 +54,13 @@ class LoginActivity : AppCompatActivity() {
         bindingUser.lifecycleOwner = this
 
         (applicationContext as App).appComponent.injectsLoginActivity(this)
+
+        if (sharedPreferences.getPreferences()
+                .getString("token", "")?.isNotEmpty()!!
+        ) {
+            val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(intentMain)
+        }
 
     }
 
@@ -74,16 +83,18 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val response = loginRequest.await()
                 if (response.isSuccessful) {
-                    Toast.makeText(this@LoginActivity, response.body()?.apiToken,
-                        LENGTH_LONG).show()
+//                    Toast.makeText(this@LoginActivity, response.body()?.apiToken,
+//                        LENGTH_LONG).show()
                     sharedPreferences.getEditor()
                         .putString("token", response.body()?.apiToken)
                         .apply()
                     val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intentMain)
                 } else {
-                    Toast.makeText(this@LoginActivity, response.errorBody()?.string(),
-                        LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@LoginActivity, response.errorBody()?.string(),
+                        LENGTH_LONG
+                    ).show()
                 }
             } catch (ex: Exception) {
                 Toast.makeText(this@LoginActivity, ex.message, LENGTH_LONG).show();
