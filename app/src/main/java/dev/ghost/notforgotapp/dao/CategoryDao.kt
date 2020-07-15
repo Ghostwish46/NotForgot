@@ -18,6 +18,7 @@ interface CategoryDao {
     fun getCategoriesWithTasks():LiveData<List<CategoryAndTasks>>
 
 
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun add(tasks:List<Category>)
 }

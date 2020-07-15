@@ -18,19 +18,11 @@ class TaskRepository(
 
     val data = taskDao.getAll()
 
-//    suspend fun getAllData(): MutableLiveData<List<Task>> {
-//        val taskData = taskDao.getAll()
-//        taskData.observe(LifecycleOwner {  })
-//        withContext(Dispatchers.IO)
-//        {
-//
-//        }
-//    }
 
     suspend fun refresh() {
         withContext(Dispatchers.IO) {
             val tasks = apiService.getTasksAsync(token).await()
-            tasks.forEach{task -> task.updateKeys()}
+            tasks.forEach{task -> task.updateKeys() }
 
             taskDao.add(tasks)
         }

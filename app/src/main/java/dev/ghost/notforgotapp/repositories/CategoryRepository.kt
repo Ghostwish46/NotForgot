@@ -1,6 +1,9 @@
 package dev.ghost.notforgotapp.repositories
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import dev.ghost.notforgotapp.dao.CategoryDao
+import dev.ghost.notforgotapp.entities.CategoryAndTasks
 import dev.ghost.notforgotapp.helpers.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,7 +14,7 @@ class CategoryRepository(
     private val categoryDao: CategoryDao,
     private val token: String
 ) {
-    val data = categoryDao.getCategoriesWithTasks()
+    var data:LiveData<List<CategoryAndTasks>> =categoryDao.getCategoriesWithTasks()
 
     suspend fun refresh() {
         withContext(Dispatchers.IO)

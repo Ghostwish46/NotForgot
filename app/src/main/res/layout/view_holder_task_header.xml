@@ -16,14 +16,10 @@
             android:id="@+id/textViewTaskHeaderName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="26dp"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/margin_normal"
-            android:textColor="@color/colorVeryDarkGray"
-            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Категория" />
+            tools:text="Категория"
+            style="@style/TitleTextView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

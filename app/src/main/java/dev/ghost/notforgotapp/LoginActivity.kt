@@ -36,9 +36,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme_Login)
 
-
-
-
         registrationViewModel = ViewModelProvider(this)
             .get(RegistrationViewModel::class.java)
 

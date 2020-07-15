@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.R
+import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.helpers.*
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,6 +15,12 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
+    companion object
+    {
+        const val TASK = "task"
+        const val PRIORITY = "priority"
+        const val CATEGORY = "category"
+    }
     @Inject
     lateinit var sharedPreferences: SharedPreferencesStorage
 
@@ -42,6 +49,12 @@ class MainActivity : AppCompatActivity() {
 //        })
 //
         mainActivityViewModel.categoriesData.observe(this, Observer {
+            it.forEach {
+                it.tasks.forEach {
+                    it.updateEntities(database.categoryDao.getById(it.categoryId),
+                        database.priorityDao.getById(it.priorityId))
+                }
+            }
             taskAdapter.updateData(it)
         })
 //
@@ -62,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                 Status.SUCCESS -> Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
             }
         })
+
 
 
     }

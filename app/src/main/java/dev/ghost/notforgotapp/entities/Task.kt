@@ -1,11 +1,17 @@
 package dev.ghost.notforgotapp.entities
 
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.View
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
 import dev.ghost.notforgotapp.helpers.ItemType
+import kotlinx.android.parcel.Parcelize
+import java.sql.Date
+import java.text.SimpleDateFormat
 
+@Parcelize
 @Entity(
     tableName = "tasks", foreignKeys = [ForeignKey(
         entity = Priority::class,
@@ -24,7 +30,7 @@ data class Task(
     var done: Int = 0,
     var deadline: Long = 0,
     var created: Long = 0
-) :ItemForList{
+) :ItemForList, Parcelable {
     @Ignore
     override var type: ItemType = ItemType.Task
 
@@ -49,6 +55,14 @@ data class Task(
     {
         this.category = category
         this.priority = priority
+        categoryId = category.id
+        priorityId = priority.id
+    }
+
+    fun getDateString(value:Long) :String
+    {
+        val format:SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy")
+        return format.format(Date(value))
     }
 
 

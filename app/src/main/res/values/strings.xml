@@ -1,22 +1,32 @@
 <resources>
-    <string name="app_name">Not Forgot App</string>
+    <string name="app_name">Not Forgot!</string>
 
     <string name="header_login">Вход</string>
     <string name="header_registration">Регистрация</string>
+    <string name="header_add_task">Добавить заметку</string>
+    <string name="header_edit_task">Редактировать заметку</string>
 
     <string name="hint_name">Имя</string>
     <string name="hint_mail">Почта</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_re_password">Повторите пароль</string>
+    <string name="hint_task_name">Название</string>
+    <string name="hint_description">Описание</string>
+    <string name="hint_category">Категория</string>
+    <string name="hint_priority">Приоритет</string>
+    <string name="hint_end_date">Сделать до</string>
 
     <string name="action_register">Зарегистрироваться</string>
     <string name="action_login">Войти</string>
+    <string name="action_edit">Редактировать</string>
+    <string name="action_save">Сохранить</string>
+
+    <string name="text_until">До %s</string>
+    <string name="text_done">Сделано</string>
+    <string name="text_not_done">Не сделано</string>
+
     <string name="title_activity_main">MainActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>

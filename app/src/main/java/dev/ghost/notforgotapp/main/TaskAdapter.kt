@@ -1,6 +1,10 @@
 package dev.ghost.notforgotapp.main
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +16,8 @@ import dev.ghost.notforgotapp.entities.CategoryAndTasks
 import dev.ghost.notforgotapp.entities.ItemForList
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.helpers.ItemType
+import dev.ghost.notforgotapp.taskinfo.TaskInfoActivity
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.view_holder_task_content.view.*
 import kotlinx.android.synthetic.main.view_holder_task_header.view.*
 
@@ -20,11 +26,9 @@ class TaskAdapter internal constructor(context: Context) :
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    //    private var tasks: List<Task> = listOf()
     private var allItems: MutableList<ItemForList> = mutableListOf()
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val taskName: TextView = itemView.findViewById(R.id.textViewTaskContentName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -56,7 +60,15 @@ class TaskAdapter internal constructor(context: Context) :
         } else if (current is Task) {
             holder.itemView.textViewTaskContentName.text = current.title
             holder.itemView.textViewTaskContentDescription.text = current.description
+            holder.itemView.setOnClickListener {
+                val intentInfo = Intent(holder.itemView.context, TaskInfoActivity::class.java)
+                intentInfo.putExtra(MainActivity.TASK, current)
+                intentInfo.putExtra(MainActivity.PRIORITY, current.priority)
+                intentInfo.putExtra(MainActivity.CATEGORY, current.category)
+                holder.itemView.context.startActivity(intentInfo)
+            }
         }
+
     }
 
     internal fun updateData(categoriesAndTasks: List<CategoryAndTasks>) {
