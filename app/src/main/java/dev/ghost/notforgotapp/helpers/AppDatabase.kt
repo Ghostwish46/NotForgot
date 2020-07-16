@@ -27,25 +27,25 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val categoryDao: CategoryDao
 
 
-    open fun getInfoAboutAll(): LiveData<List<CategoryAndTasks>> {
-        var categoriesLiveData: LiveData<List<CategoryAndTasks>> =
-            categoryDao.getCategoriesWithTasks()
-        categoriesLiveData = Transformations.map(
-            categoriesLiveData, Function<List<CategoryAndTasks>, List<CategoryAndTasks>> {
-                @Override
-                fun apply(val inputCategories:List<CategoryAndTasks>):List<CategoryAndTasks>
-                {
-                    for (category in inputCategories) {
-                        category.tasks.forEach {
-                            it.updateEntities(categoryDao.getById(it.categoryId),
-                            priorityDao.getById(it.priorityId))
-                        }
-                    }
-                    return inputCategories!!
-                }
-            })
-            return categoriesLiveData
-    }
+//    open fun getInfoAboutAll(): LiveData<List<CategoryAndTasks>> {
+//        var categoriesLiveData: LiveData<List<CategoryAndTasks>> =
+//            categoryDao.getCategoriesWithTasks()
+//        categoriesLiveData = Transformations.map(
+//            categoriesLiveData, Function<List<CategoryAndTasks>, List<CategoryAndTasks>> {
+//                @Override
+//                fun apply(val inputCategories:List<CategoryAndTasks>):List<CategoryAndTasks>
+//                {
+//                    for (category in inputCategories) {
+//                        category.tasks.forEach {
+//                            it.updateEntities(categoryDao.getById(it.categoryId),
+//                            priorityDao.getById(it.priorityId))
+//                        }
+//                    }
+//                    return inputCategories!!
+//                }
+//            })
+//            return categoriesLiveData
+//    }
 
 
     companion object {

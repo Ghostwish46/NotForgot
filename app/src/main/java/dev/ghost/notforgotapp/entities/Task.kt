@@ -29,7 +29,9 @@ data class Task(
     var description: String = "",
     var done: Int = 0,
     var deadline: Long = 0,
-    var created: Long = 0
+    var created: Long = 0,
+    var categoryId: Int = 0,
+    var priorityId: Int = 0
 ) :ItemForList, Parcelable {
     @Ignore
     override var type: ItemType = ItemType.Task
@@ -41,9 +43,6 @@ data class Task(
     @Ignore
     @SerializedName("priority")
     var priority: Priority? = null
-
-    var categoryId: Int = 0
-    var priorityId: Int = 0
 
 
     fun updateKeys(){

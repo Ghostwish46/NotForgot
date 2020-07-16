@@ -63,8 +63,8 @@ class TaskAdapter internal constructor(context: Context) :
             holder.itemView.setOnClickListener {
                 val intentInfo = Intent(holder.itemView.context, TaskInfoActivity::class.java)
                 intentInfo.putExtra(MainActivity.TASK, current)
-                intentInfo.putExtra(MainActivity.PRIORITY, current.priority)
-                intentInfo.putExtra(MainActivity.CATEGORY, current.category)
+//                intentInfo.putExtra(MainActivity.PRIORITY, current.priority)
+//                intentInfo.putExtra(MainActivity.CATEGORY, current.category)
                 holder.itemView.context.startActivity(intentInfo)
             }
         }

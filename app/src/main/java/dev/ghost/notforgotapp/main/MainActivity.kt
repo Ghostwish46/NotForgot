@@ -49,12 +49,6 @@ class MainActivity : AppCompatActivity() {
 //        })
 //
         mainActivityViewModel.categoriesData.observe(this, Observer {
-            it.forEach {
-                it.tasks.forEach {
-                    it.updateEntities(database.categoryDao.getById(it.categoryId),
-                        database.priorityDao.getById(it.priorityId))
-                }
-            }
             taskAdapter.updateData(it)
         })
 //

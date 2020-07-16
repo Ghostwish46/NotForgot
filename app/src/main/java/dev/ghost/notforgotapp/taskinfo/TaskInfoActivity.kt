@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.databinding.ActivityTaskInfoBinding
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.main.MainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TaskInfoActivity : AppCompatActivity() {
 
@@ -20,15 +23,21 @@ class TaskInfoActivity : AppCompatActivity() {
             .get(TaskInfoViewModel::class.java)
 
         val currentTask: Task = intent.getParcelableExtra(MainActivity.TASK)!!
-        currentTask.updateEntities(intent.getParcelableExtra(MainActivity.CATEGORY)!!,
-                intent.getParcelableExtra(MainActivity.PRIORITY)!!)
+
         taskInfoViewModel.currentTask = currentTask
+        taskInfoViewModel.viewModelScope.launch(Dispatchers.IO) {
+            taskInfoViewModel.loadEntities()
+
+            launch(Dispatchers.Main) {
+                val bindingTaskInfo: ActivityTaskInfoBinding = DataBindingUtil
+                    .setContentView(this@TaskInfoActivity, R.layout.activity_task_info)
+                bindingTaskInfo.task = taskInfoViewModel.currentTask
+            }
+        }
 
 
-        val bindingTaskInfo: ActivityTaskInfoBinding = DataBindingUtil
-            .setContentView(this, R.layout.activity_task_info)
 
-        bindingTaskInfo.task = taskInfoViewModel.currentTask
+
 
 
     }

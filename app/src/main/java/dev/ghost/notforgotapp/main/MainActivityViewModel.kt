@@ -54,15 +54,15 @@ class MainActivityViewModel (
     {
         viewModelScope.launch {
             try {
-                _loadingState.value = LoadingState.LOADING
-                priorityRepository.refresh()
-                categoryRepository.refresh()
-                taskRepository.refresh()
-                _loadingState.value = LoadingState.LOADED
+            _loadingState.value = LoadingState.LOADING
+            priorityRepository.refresh()
+            categoryRepository.refresh()
+            taskRepository.refresh()
+            _loadingState.value = LoadingState.LOADED
 
-            } catch (e: Exception) {
-                _loadingState.value = LoadingState.error(e.message)
-            }
+        } catch (e: Exception) {
+            _loadingState.value = LoadingState.error(e.message)
+        }
         }
     }
 }

@@ -14,7 +14,7 @@ class CategoryRepository(
     private val categoryDao: CategoryDao,
     private val token: String
 ) {
-    var data:LiveData<List<CategoryAndTasks>> =categoryDao.getCategoriesWithTasks()
+    var data:LiveData<List<CategoryAndTasks>> = categoryDao.getCategoriesWithTasks()
 
     suspend fun refresh() {
         withContext(Dispatchers.IO)
