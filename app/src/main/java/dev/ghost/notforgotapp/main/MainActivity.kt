@@ -1,7 +1,9 @@
 package dev.ghost.notforgotapp.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +12,7 @@ import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.helpers.*
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
+import dev.ghost.notforgotapp.taskedit.TaskEditActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -48,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        })
 //
-        mainActivityViewModel.categoriesData.observe(this, Observer {
+        mainActivityViewModel.tasksFullInfoData.observe(this, Observer {
             taskAdapter.updateData(it)
         })
 //
@@ -69,8 +72,11 @@ class MainActivity : AppCompatActivity() {
                 Status.SUCCESS -> Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
             }
         })
+    }
 
-
-
+    fun addNewTaskTransition(v:View)
+    {
+        val intentNewTask = Intent(this, TaskEditActivity::class.java)
+        startActivity(intentNewTask)
     }
 }

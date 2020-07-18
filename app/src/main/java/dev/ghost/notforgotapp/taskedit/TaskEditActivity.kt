@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import dev.ghost.notforgotapp.R
+import dev.ghost.notforgotapp.databinding.ActivityTaskEditBinding
 import dev.ghost.notforgotapp.databinding.ActivityTaskInfoBinding
 import dev.ghost.notforgotapp.taskinfo.TaskInfoViewModel
 
@@ -22,7 +23,7 @@ class TaskEditActivity : AppCompatActivity() {
 //        taskInfoViewModel.currentTask =
 //            (intent.getParcelableExtra(MainActivity.TASK))
 
-        val bindingTaskInfo: ActivityTaskInfoBinding = DataBindingUtil
+        val bindingTaskInfo: ActivityTaskEditBinding = DataBindingUtil
             .setContentView(this, R.layout.activity_task_edit)
 
         bindingTaskInfo.task = taskEditViewModel.currentTask

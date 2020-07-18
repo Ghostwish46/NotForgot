@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/margin_normal"
-            android:text="@string/header_add_task"
+            android:text="@{task.id == 0? @string/header_add_task : @string/header_edit_task}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,11 +40,12 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginEnd="@dimen/margin_normal"
             android:layout_marginBottom="@dimen/margin_normal"
+            android:background="@color/colorWhite"
             android:fillViewport="true"
+            android:paddingLeft="@dimen/margin_normal"
+            android:paddingRight="@dimen/margin_normal"
             app:layout_constraintBottom_toTopOf="@+id/buttonTaskEditSave"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +69,7 @@
                     android:textColor="@color/colorVeryDarkGray"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-                    tools:text="31 / 120" />
+                    tools:text="@{editTextTaskEditName.text.length() / 120}" />
 
                 <EditText
                     android:id="@+id/editTextTaskEditName"
@@ -79,9 +80,11 @@
                     android:hint="@string/hint_task_name"
                     android:inputType="text"
                     android:textSize="16sp"
+                    android:maxLength="120"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@{task.title}"/>
 
                 <EditText
                     android:id="@+id/editTextTaskEditEndDate"
@@ -90,12 +93,13 @@
                     android:layout_marginTop="@dimen/margin_normal"
                     android:ems="10"
                     android:hint="@string/hint_end_date"
-                    android:inputType="text"
+                    android:inputType="none"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerTaskEditPriority" />
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerTaskEditPriority"
+                    android:text='@{task.deadline == 0? "" : task.getDateString(task.deadline)}'/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout"
@@ -118,7 +122,8 @@
                         android:maxLines="3"
                         android:minLines="3"
                         android:textSize="16sp"
-                        tools:text="@string/hint_description" />
+                        tools:text="@string/hint_description"
+                        android:text='@{task.description}'/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Spinner

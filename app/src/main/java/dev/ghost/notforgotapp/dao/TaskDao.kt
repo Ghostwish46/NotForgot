@@ -3,6 +3,7 @@ package dev.ghost.notforgotapp.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import dev.ghost.notforgotapp.entities.Task
+import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
 
 @Dao
 interface TaskDao {
@@ -12,4 +13,8 @@ interface TaskDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun add(tasks:List<Task>)
+
+    @Transaction
+    @Query("Select * from tasks")
+    fun getTasksFullInfo():LiveData<List<TaskWithCategoryAndPriority>>
 }

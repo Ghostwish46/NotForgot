@@ -3,10 +3,7 @@ package dev.ghost.notforgotapp.main
 import android.app.Application
 import androidx.lifecycle.*
 import dev.ghost.notforgotapp.dao.TaskDao
-import dev.ghost.notforgotapp.entities.Category
-import dev.ghost.notforgotapp.entities.CategoryAndTasks
-import dev.ghost.notforgotapp.entities.Priority
-import dev.ghost.notforgotapp.entities.Task
+import dev.ghost.notforgotapp.entities.*
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
 import dev.ghost.notforgotapp.helpers.LoadingState
@@ -17,9 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class MainActivityViewModel (
+class MainActivityViewModel(
     application: Application,
-    token:String
+    token: String
 ) : AndroidViewModel(application) {
     private val _loadingState = MutableLiveData<LoadingState>()
 
@@ -27,10 +24,9 @@ class MainActivityViewModel (
     private val priorityRepository: PriorityRepository
     private val categoryRepository: CategoryRepository
 
-    val tasksData:LiveData<List<Task>>
-    val categoriesData:LiveData<List<CategoryAndTasks>>
-    val prioritiesData:LiveData<List<Priority>>
-
+    val tasksFullInfoData: LiveData<List<TaskWithCategoryAndPriority>>
+    private val categoriesData: LiveData<List<CategoryAndTasks>>
+    private val prioritiesData: LiveData<List<Priority>>
 
 
     init {
@@ -40,9 +36,10 @@ class MainActivityViewModel (
         priorityRepository = PriorityRepository(apiService, appDatabase.priorityDao, token)
         categoryRepository = CategoryRepository(apiService, appDatabase.categoryDao, token)
 
-        tasksData = taskRepository.data
         categoriesData = categoryRepository.data
         prioritiesData = priorityRepository.data
+
+        tasksFullInfoData = taskRepository.fullInfoData
 
         fetchTasks()
     }
@@ -50,19 +47,18 @@ class MainActivityViewModel (
     val loadingState: LiveData<LoadingState>
         get() = _loadingState
 
-    private fun fetchTasks()
-    {
+    private fun fetchTasks() {
         viewModelScope.launch {
             try {
-            _loadingState.value = LoadingState.LOADING
-            priorityRepository.refresh()
-            categoryRepository.refresh()
-            taskRepository.refresh()
-            _loadingState.value = LoadingState.LOADED
+                _loadingState.value = LoadingState.LOADING
+                priorityRepository.refresh()
+                categoryRepository.refresh()
+                taskRepository.refresh()
+                _loadingState.value = LoadingState.LOADED
 
-        } catch (e: Exception) {
-            _loadingState.value = LoadingState.error(e.message)
-        }
+            } catch (e: Exception) {
+                _loadingState.value = LoadingState.error(e.message)
+            }
         }
     }
 }

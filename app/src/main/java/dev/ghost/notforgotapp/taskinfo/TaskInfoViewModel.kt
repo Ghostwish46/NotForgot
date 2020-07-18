@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.entities.Task
+import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
 import dev.ghost.notforgotapp.helpers.LoadingState
@@ -19,8 +20,6 @@ class TaskInfoViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val appDatabase: AppDatabase = AppDatabase.getDatabase(application)
-
     var currentTask: Task? = null
         set(value) {
             if (currentTask != null)
@@ -29,15 +28,4 @@ class TaskInfoViewModel(
                 field = value
             }
         }
-
-    suspend fun loadEntities() {
-        withContext(Dispatchers.IO)
-        {
-            currentTask?.updateEntities(
-                appDatabase.categoryDao.getById(currentTask!!.categoryId),
-                appDatabase.priorityDao.getById(currentTask!!.priorityId)
-            )
-        }
-    }
-
 }

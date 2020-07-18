@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.databinding.ActivityTaskInfoBinding
 import dev.ghost.notforgotapp.entities.Task
+import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
 import dev.ghost.notforgotapp.main.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,23 +23,14 @@ class TaskInfoActivity : AppCompatActivity() {
         taskInfoViewModel = ViewModelProvider(this)
             .get(TaskInfoViewModel::class.java)
 
-        val currentTask: Task = intent.getParcelableExtra(MainActivity.TASK)!!
+        val fullTaskInfo: TaskWithCategoryAndPriority = intent.getParcelableExtra(MainActivity.TASK)!!
+        val task:Task = fullTaskInfo.task
+        task.updateEntities(fullTaskInfo.category, fullTaskInfo.priority)
 
-        taskInfoViewModel.currentTask = currentTask
-        taskInfoViewModel.viewModelScope.launch(Dispatchers.IO) {
-            taskInfoViewModel.loadEntities()
+        taskInfoViewModel.currentTask = task
 
-            launch(Dispatchers.Main) {
-                val bindingTaskInfo: ActivityTaskInfoBinding = DataBindingUtil
+        val bindingTaskInfo: ActivityTaskInfoBinding = DataBindingUtil
                     .setContentView(this@TaskInfoActivity, R.layout.activity_task_info)
                 bindingTaskInfo.task = taskInfoViewModel.currentTask
-            }
-        }
-
-
-
-
-
-
     }
 }

@@ -24,6 +24,7 @@
     <string name="text_until">До %s</string>
     <string name="text_done">Сделано</string>
     <string name="text_not_done">Не сделано</string>
+    <string name="text_unspecified">Не указано</string>
 
     <string name="title_activity_main">MainActivity</string>
 

@@ -17,6 +17,7 @@ class TaskRepository(
 ) {
 
     val data = taskDao.getAll()
+    val fullInfoData = taskDao.getTasksFullInfo()
 
 
     suspend fun refresh() {

@@ -61,7 +61,7 @@ data class Task(
     fun getDateString(value:Long) :String
     {
         val format:SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy")
-        return format.format(Date(value))
+        return format.format(Date(value*1000))
     }
 
 

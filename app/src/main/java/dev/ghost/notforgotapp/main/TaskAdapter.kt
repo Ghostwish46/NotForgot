@@ -11,10 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import dev.ghost.notforgotapp.R
-import dev.ghost.notforgotapp.entities.Category
-import dev.ghost.notforgotapp.entities.CategoryAndTasks
-import dev.ghost.notforgotapp.entities.ItemForList
-import dev.ghost.notforgotapp.entities.Task
+import dev.ghost.notforgotapp.entities.*
 import dev.ghost.notforgotapp.helpers.ItemType
 import dev.ghost.notforgotapp.taskinfo.TaskInfoActivity
 import kotlinx.android.parcel.Parcelize
@@ -57,9 +54,9 @@ class TaskAdapter internal constructor(context: Context) :
         val current = allItems[position]
         if (current is Category) {
             holder.itemView.textViewTaskHeaderName.text = current.name
-        } else if (current is Task) {
-            holder.itemView.textViewTaskContentName.text = current.title
-            holder.itemView.textViewTaskContentDescription.text = current.description
+        } else if (current is TaskWithCategoryAndPriority) {
+            holder.itemView.textViewTaskContentName.text = current.task.title
+            holder.itemView.textViewTaskContentDescription.text = current.task.description
             holder.itemView.setOnClickListener {
                 val intentInfo = Intent(holder.itemView.context, TaskInfoActivity::class.java)
                 intentInfo.putExtra(MainActivity.TASK, current)
@@ -71,16 +68,28 @@ class TaskAdapter internal constructor(context: Context) :
 
     }
 
-    internal fun updateData(categoriesAndTasks: List<CategoryAndTasks>) {
+    internal fun updateData(tasksFullInfo: List<TaskWithCategoryAndPriority>) {
         allItems.clear()
-        categoriesAndTasks.filter {
-            it.tasks.isNotEmpty()
-        }.forEach {
-            allItems.add(it.category)
-            it.tasks.forEach {
+
+        tasksFullInfo.distinctBy {
+            it.category
+        }.forEach { currentCategory ->
+            allItems.add(currentCategory.category)
+            tasksFullInfo.filter {
+                it.category == currentCategory.category
+            }.forEach {
                 allItems.add(it)
             }
         }
+
+//        categoriesAndTasks.filter {
+//            it.tasks.isNotEmpty()
+//        }.forEach {
+//            allItems.add(it.category)
+//            it.tasks.forEach {
+//                allItems.add(it)
+//            }
+//        }
         notifyDataSetChanged()
     }
 }

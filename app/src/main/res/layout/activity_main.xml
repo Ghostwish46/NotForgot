@@ -38,7 +38,8 @@
             android:tint="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/icon_add" />
+            app:srcCompat="@drawable/icon_add"
+            android:onClick="addNewTaskTransition"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
