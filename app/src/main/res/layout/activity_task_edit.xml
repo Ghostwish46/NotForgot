@@ -82,7 +82,6 @@
                     android:ems="10"
                     android:hint="@string/hint_task_name"
                     android:inputType="text"
-                    android:maxLength="120"
                     android:text="@={task.title}"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -167,7 +166,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/spinnerTaskEditCategory"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/spinnerTaskEditCategory"
-                    app:srcCompat="@drawable/icon_add" />
+                    app:srcCompat="@drawable/icon_add"
+                    android:onClick="showAddCategoryDialog"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

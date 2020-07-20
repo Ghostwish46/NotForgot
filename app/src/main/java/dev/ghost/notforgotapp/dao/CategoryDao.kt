@@ -21,5 +21,8 @@ interface CategoryDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun add(tasks:List<Category>)
+    fun add(category: Category)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addMany(categories:List<Category>)
 }

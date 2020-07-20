@@ -5,6 +5,7 @@
     <string name="header_registration">Регистрация</string>
     <string name="header_add_task">Добавить заметку</string>
     <string name="header_edit_task">Редактировать заметку</string>
+    <string name="header_add_category">Добавить категорию</string>
 
     <string name="hint_name">Имя</string>
     <string name="hint_mail">Почта</string>
@@ -20,6 +21,7 @@
     <string name="action_login">Войти</string>
     <string name="action_edit">Редактировать</string>
     <string name="action_save">Сохранить</string>
+    <string name="action_cancel">Отмена</string>
 
     <string name="text_until">До %s</string>
     <string name="text_done">Сделано</string>
@@ -27,7 +29,8 @@
     <string name="text_unspecified">Не указано</string>
 
     <string name="text_task_saved_successfully">Дело успешно сохранено.</string>
-    <string name="text_task_saved_error">Ошибка соединения. Данные сохранены локально.</string>
+    <string name="text_category_saved_successfully">Категория успешно добавлена.</string>
+    <string name="text_api_saving_error">Ошибка соединения. Данные сохранены локально.</string>
 
 
 

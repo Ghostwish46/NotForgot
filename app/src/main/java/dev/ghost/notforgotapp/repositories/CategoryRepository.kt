@@ -3,6 +3,7 @@ package dev.ghost.notforgotapp.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dev.ghost.notforgotapp.dao.CategoryDao
+import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.CategoryAndTasks
 import dev.ghost.notforgotapp.helpers.ApiService
 import kotlinx.coroutines.Dispatchers
@@ -14,14 +15,31 @@ class CategoryRepository(
     private val categoryDao: CategoryDao,
     private val token: String
 ) {
-    var data:LiveData<List<CategoryAndTasks>> = categoryDao.getCategoriesWithTasks()
+    var data: LiveData<List<CategoryAndTasks>> = categoryDao.getCategoriesWithTasks()
 
     suspend fun refresh() {
         withContext(Dispatchers.IO)
         {
             val categories = apiService.getCategoriesAsync(token)
                 .await()
-            categoryDao.add(categories)
+            categoryDao.addMany(categories)
+        }
+    }
+
+    suspend fun postCategory(category: Category):Boolean {
+        return withContext(Dispatchers.IO)
+        {
+            val categoryRequest = apiService
+                .addCategoryAsync(token, category)
+            val response = categoryRequest.await()
+            if (response.isSuccessful) {
+                val newCategory = response.body()!!
+                categoryDao.add(newCategory)
+                true
+            } else {
+                false
+            }
+
         }
     }
 }

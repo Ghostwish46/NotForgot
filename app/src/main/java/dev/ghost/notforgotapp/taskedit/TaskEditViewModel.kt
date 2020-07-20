@@ -14,6 +14,7 @@ import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
+import dev.ghost.notforgotapp.repositories.CategoryRepository
 import dev.ghost.notforgotapp.repositories.TaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.callbackFlow
@@ -27,13 +28,19 @@ class TaskEditViewModel(
 ) : AndroidViewModel(application) {
 
     private val appDatabase = AppDatabase.getDatabase(application)
-    private val sharedPreferences = application.getSharedPreferences("Dagger", Context.MODE_PRIVATE)
+    private val token = application
+        .getSharedPreferences("Dagger", Context.MODE_PRIVATE)
+        .getString("token", "")!!
     private val taskRepository =
         TaskRepository(
             ApiUtils.apiService,
             appDatabase.taskDao,
-            sharedPreferences.getString("token", "")!!
+            token
         )
+    private val categoryRepository =
+        CategoryRepository(ApiUtils.apiService,
+        appDatabase.categoryDao,
+        token)
 
     var allCategories: LiveData<List<Category>>
     var allPriorities: LiveData<List<Priority>>
@@ -53,6 +60,8 @@ class TaskEditViewModel(
             }
         }
 
+    var categoryForAdding:Category = Category(0, "")
+
     fun setEndDate(value: Long) {
         currentTask?.deadline = value
     }
@@ -66,6 +75,11 @@ class TaskEditViewModel(
             taskRepository.postTask(currentTask!!)
         else
             taskRepository.patchTask(currentTask!!)
+    }
+
+    suspend fun addCategory():Boolean
+    {
+        return categoryRepository.postCategory(categoryForAdding)
     }
 }
 

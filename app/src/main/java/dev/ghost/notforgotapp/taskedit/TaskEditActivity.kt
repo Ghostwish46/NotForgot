@@ -1,14 +1,15 @@
 package dev.ghost.notforgotapp.taskedit
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.TaskStackBuilder
 import android.icu.util.Calendar
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.databinding.ActivityTaskEditBinding
+import dev.ghost.notforgotapp.databinding.AlertDialogAddCategoryBinding
 import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
@@ -26,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+
 
 class TaskEditActivity : AppCompatActivity() {
 
@@ -162,7 +165,7 @@ class TaskEditActivity : AppCompatActivity() {
                         ).show()
                     } else {
                         Toast.makeText(
-                            this@TaskEditActivity, getString(R.string.text_task_saved_error),
+                            this@TaskEditActivity, getString(R.string.text_api_saving_error),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -171,5 +174,52 @@ class TaskEditActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    fun showAddCategoryDialog(view: View) {
+        val bindingAddCategory: AlertDialogAddCategoryBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(this),
+            R.layout.alert_dialog_add_category,
+            null,
+            false
+        )
+
+        bindingAddCategory.editTextAddTaskName.doAfterTextChanged {
+            bindingAddCategory.invalidateAll()
+        }
+        bindingAddCategory.category = taskEditViewModel.categoryForAdding
+
+        val alertDialog =
+            AlertDialog.Builder(this, R.style.DialogTheme).setView(bindingAddCategory.root)
+                .setPositiveButton(R.string.action_save)
+                { dialog, which ->
+                    taskEditViewModel.viewModelScope.launch {
+                        withContext(Dispatchers.IO)
+                        {
+                            val result = taskEditViewModel.addCategory()
+                            withContext(Dispatchers.Main)
+                            {
+                                if (result) {
+                                    Toast.makeText(
+                                        this@TaskEditActivity,
+                                        getString(R.string.text_category_saved_successfully),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        this@TaskEditActivity,
+                                        getString(R.string.text_api_saving_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                taskEditViewModel.categoryForAdding.name = ""
+                                dialog.dismiss()
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.action_cancel)
+                { dialog, which -> dialog.dismiss() }
+                .show()
     }
 }

@@ -42,4 +42,10 @@ interface ApiService {
         @Body task: Task
     ): Deferred<Response<Task>>
 
+    @POST("categories")
+    fun addCategoryAsync(
+        @Query("api_token") token: String,
+        @Body category: Category
+    ): Deferred<Response<Category>>
+
 }
