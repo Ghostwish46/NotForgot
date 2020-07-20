@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="task"
-    type="dev.ghost.notforgotapp.entities.Task" />
+
+        <variable
+            name="task"
+            type="dev.ghost.notforgotapp.entities.Task" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,6 +33,7 @@
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
             android:layout_marginBottom="@dimen/margin_normal"
+            android:onClick="editTask"
             android:text="@string/action_save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +71,8 @@
                     android:textColor="@color/colorVeryDarkGray"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-                    tools:text="@{editTextTaskEditName.text.length() / 120}" />
+                    tools:text='@{task.description.length() + " / 120"}' />
+
 
                 <EditText
                     android:id="@+id/editTextTaskEditName"
@@ -79,31 +82,33 @@
                     android:ems="10"
                     android:hint="@string/hint_task_name"
                     android:inputType="text"
-                    android:textSize="16sp"
                     android:maxLength="120"
+                    android:text="@={task.title}"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="@{task.title}"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/editTextTaskEditEndDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_normal"
+                    android:editable="false"
                     android:ems="10"
+                    android:focusable="false"
                     android:hint="@string/hint_end_date"
                     android:inputType="none"
+                    android:text='@{task.deadline == 0? "" : task.getDateString(task.deadline)}'
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinnerTaskEditPriority"
-                    android:text='@{task.deadline == 0? "" : task.getDateString(task.deadline)}'/>
+                    app:layout_constraintTop_toBottomOf="@+id/spinnerTaskEditPriority" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textInputLayout"
-                    android:layout_width="377dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_normal"
                     android:background="@drawable/background_edit_text"
@@ -117,13 +122,15 @@
                         android:layout_height="wrap_content"
                         android:gravity="fill_horizontal"
                         android:hint="@string/hint_description"
+
                         android:inputType="textMultiLine"
                         android:lines="3"
+                        android:maxLength="120"
                         android:maxLines="3"
                         android:minLines="3"
+                        android:text='@={task.description}'
                         android:textSize="16sp"
-                        tools:text="@string/hint_description"
-                        android:text='@{task.description}'/>
+                        tools:text="@string/hint_description" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Spinner
@@ -134,9 +141,11 @@
                     android:layout_marginEnd="@dimen/margin_normal"
                     android:background="@drawable/background_edit_text"
                     android:padding="@dimen/margin_small"
+                    android:spinnerMode="dialog"
                     app:layout_constraintEnd_toStartOf="@+id/imageView3"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewTaskEditLinesCount" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTaskEditLinesCount"
+                    />
 
                 <Spinner
                     android:id="@+id/spinnerTaskEditPriority"

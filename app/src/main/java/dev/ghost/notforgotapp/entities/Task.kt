@@ -30,7 +30,9 @@ data class Task(
     var done: Int = 0,
     var deadline: Long = 0,
     var created: Long = 0,
+    @SerializedName("category_id")
     var categoryId: Int = 0,
+    @SerializedName("priority_id")
     var priorityId: Int = 0
 ) :ItemForList, Parcelable {
     @Ignore
@@ -64,5 +66,9 @@ data class Task(
         return format.format(Date(value*1000))
     }
 
+    fun getDoneBoolean():Boolean
+    {
+        return done == 1
+    }
 
 }

@@ -20,9 +20,9 @@ class TaskInfoViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    var currentTask: Task? = null
+    var fullTask: TaskWithCategoryAndPriority? = null
         set(value) {
-            if (currentTask != null)
+            if (field != null)
                 return
             else {
                 field = value

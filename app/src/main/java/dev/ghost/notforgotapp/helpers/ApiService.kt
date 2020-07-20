@@ -18,14 +18,28 @@ interface ApiService {
 
     @GET("tasks")
     @Headers("Accept:application/json")
-    fun getTasksAsync(@Query("api_token") token:String):Deferred<List<Task>>
+    fun getTasksAsync(@Query("api_token") token: String): Deferred<List<Task>>
 
     @GET("priorities")
     @Headers("Accept:application/json")
-    fun getPrioritiesAsync(@Query("api_token") token:String):Deferred<List<Priority>>
+    fun getPrioritiesAsync(@Query("api_token") token: String): Deferred<List<Priority>>
 
     @GET("categories")
     @Headers("Accept:application/json")
-    fun getCategoriesAsync(@Query("api_token") token:String):Deferred<List<Category>>
+    fun getCategoriesAsync(@Query("api_token") token: String): Deferred<List<Category>>
+
+    @POST("tasks")
+    fun addTaskAsync(
+        @Query("api_token") token: String,
+        @Body task: Task
+    ): Deferred<Response<Task>>
+
+    @PATCH("tasks/{id}")
+    @Headers("Accept:application/json")
+    fun patchTaskAsync(
+        @Path("id") id:Int,
+        @Query("api_token") token: String,
+        @Body task: Task
+    ): Deferred<Response<Task>>
 
 }

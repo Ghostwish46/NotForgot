@@ -12,7 +12,10 @@ interface TaskDao {
     fun getAll():LiveData<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun add(tasks:List<Task>)
+    fun addList(tasks:List<Task>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun add(task:Task)
 
     @Transaction
     @Query("Select * from tasks")

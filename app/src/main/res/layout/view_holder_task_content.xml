@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textViewTaskContentPriorityColor"
             android:layout_width="10dp"
             android:layout_height="0dp"
             android:background="@color/colorRed"
@@ -31,8 +31,8 @@
             android:textColor="@color/colorBlack"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/checkBoxTaskChecked"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintEnd_toStartOf="@+id/checkBoxTaskContentDone"
+            app:layout_constraintStart_toEndOf="@+id/textViewTaskContentPriorityColor"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Погладить котика"/>
 
@@ -45,21 +45,21 @@
             android:layout_marginEnd="@dimen/margin_normal"
             android:textColor="@color/colorDarkGray"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/checkBoxTaskChecked"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintEnd_toStartOf="@+id/checkBoxTaskContentDone"
+            app:layout_constraintStart_toEndOf="@+id/textViewTaskContentPriorityColor"
             app:layout_constraintTop_toBottomOf="@+id/textViewTaskContentName"
             tools:text="Нежно и аккуратно" />
 
         <CheckBox
-            android:id="@+id/checkBoxTaskChecked"
+            android:id="@+id/checkBoxTaskContentDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_normal"
             android:buttonTint="@color/colorPrimary"
             android:checked="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textView3"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewTaskContentPriorityColor"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView3" />
+            app:layout_constraintTop_toTopOf="@+id/textViewTaskContentPriorityColor" />
 
         <Space
             android:id="@+id/space"

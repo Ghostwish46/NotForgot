@@ -16,4 +16,9 @@ data class Category(
     var name: String = ""):ItemForList, Parcelable {
     @Ignore
     override var type: ItemType = ItemType.Category
+
+
+    override fun toString(): String {
+        return name
+    }
 }

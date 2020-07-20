@@ -1,4 +1,4 @@
-package dev.ghost.notforgotapp.viewmodels
+package dev.ghost.notforgotapp.login
 
 import androidx.lifecycle.ViewModel
 import dev.ghost.notforgotapp.entities.User

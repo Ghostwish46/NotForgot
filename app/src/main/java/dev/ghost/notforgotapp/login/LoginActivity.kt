@@ -1,4 +1,4 @@
-package dev.ghost.notforgotapp
+package dev.ghost.notforgotapp.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,12 +8,13 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import dev.ghost.notforgotapp.App
+import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.databinding.ActivityLoginBinding
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.main.MainActivity
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
-import dev.ghost.notforgotapp.viewmodels.RegistrationViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

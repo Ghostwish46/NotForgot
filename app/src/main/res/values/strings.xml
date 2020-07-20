@@ -26,9 +26,10 @@
     <string name="text_not_done">Не сделано</string>
     <string name="text_unspecified">Не указано</string>
 
+    <string name="text_task_saved_successfully">Дело успешно сохранено.</string>
+    <string name="text_task_saved_error">Ошибка соединения. Данные сохранены локально.</string>
+
+
+
     <string name="title_activity_main">MainActivity</string>
-
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

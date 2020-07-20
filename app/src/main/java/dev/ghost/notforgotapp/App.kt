@@ -3,7 +3,7 @@ package dev.ghost.notforgotapp
 import android.app.Application
 import android.content.SharedPreferences
 import android.os.UserManager
-import dev.ghost.notforgotapp.LoginActivity_MembersInjector.create
+import dev.ghost.notforgotapp.login.LoginActivity_MembersInjector.create
 import dev.ghost.notforgotapp.components.AppComponent
 import dev.ghost.notforgotapp.components.DaggerAppComponent
 

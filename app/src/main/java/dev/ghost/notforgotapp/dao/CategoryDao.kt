@@ -10,6 +10,7 @@ interface CategoryDao {
     @Query("Select * from categories")
     fun getAll(): LiveData<List<Category>>
 
+
     @Query("Select * from categories where id = :id")
     fun getById(id:Int): Category
 
