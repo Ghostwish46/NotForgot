@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
+import dagger.multibindings.ElementsIntoSet
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.entities.*
 import dev.ghost.notforgotapp.helpers.ItemType
@@ -19,8 +21,12 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_task_info.view.*
 import kotlinx.android.synthetic.main.view_holder_task_content.view.*
 import kotlinx.android.synthetic.main.view_holder_task_header.view.*
+import kotlinx.coroutines.launch
 
-class TaskAdapter internal constructor(context: Context) :
+class TaskAdapter internal constructor(
+    context: Context,
+    val mainActivityViewModel: MainActivityViewModel
+) :
     RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -72,12 +78,24 @@ class TaskAdapter internal constructor(context: Context) :
                 intentInfo.putExtra(MainActivity.TASK, current)
                 holder.itemView.context.startActivity(intentInfo)
             }
+
+            holder.itemView.checkBoxTaskContentDone.setOnClickListener {
+                if (holder.itemView.checkBoxTaskContentDone.isChecked) {
+                    current.task.done = 1
+                    mainActivityViewModel.viewModelScope.launch {
+                        mainActivityViewModel.changeTask(current.task)
+                    }
+                } else {
+                    holder.itemView.checkBoxTaskContentDone.isChecked = true
+                }
+
+
+            }
         }
     }
 
 
-    fun getItemByViewHolder(viewHolder: RecyclerView.ViewHolder):ItemForList
-    {
+    fun getItemByViewHolder(viewHolder: RecyclerView.ViewHolder): ItemForList {
         return allItems[viewHolder.adapterPosition]
     }
 

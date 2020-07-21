@@ -26,8 +26,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val TASK = "task"
-        const val PRIORITY = "priority"
-        const val CATEGORY = "category"
     }
 
     @Inject
@@ -47,8 +45,8 @@ class MainActivity : AppCompatActivity() {
                 .getString("token", "")!!
         )
 
-        val taskAdapter = TaskAdapter(this)
-        recyclerMainTasks.adapter = taskAdapter
+        mainActivityViewModel.mainActivityAdapter = TaskAdapter(this, mainActivityViewModel)
+        recyclerMainTasks.adapter = mainActivityViewModel.mainActivityAdapter
         recyclerMainTasks.layoutManager = LinearLayoutManager(this)
 
         val taskTouchHelperCallBack =
@@ -62,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val item = (taskAdapter.getItemByViewHolder(viewHolder))
+                    val item = (mainActivityViewModel.mainActivityAdapter.getItemByViewHolder(viewHolder))
 
                     if (item is TaskWithCategoryAndPriority)
                         mainActivityViewModel.viewModelScope
@@ -104,8 +102,10 @@ class MainActivity : AppCompatActivity() {
         val taskTouchHelper = ItemTouchHelper(taskTouchHelperCallBack)
         taskTouchHelper.attachToRecyclerView(recyclerMainTasks)
 
+
+
         mainActivityViewModel.tasksFullInfoData.observe(this, Observer {
-            taskAdapter.updateData(it)
+            mainActivityViewModel.mainActivityAdapter.updateData(it)
         })
 
         mainActivityViewModel.loadingState.observe(this, Observer {

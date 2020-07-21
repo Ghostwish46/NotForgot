@@ -24,6 +24,8 @@ class MainActivityViewModel(
     private val priorityRepository: PriorityRepository
     private val categoryRepository: CategoryRepository
 
+    lateinit var mainActivityAdapter:TaskAdapter
+
     val tasksFullInfoData: LiveData<List<TaskWithCategoryAndPriority>>
     private val categoriesData: LiveData<List<CategoryAndTasks>>
     private val prioritiesData: LiveData<List<Priority>>
@@ -65,4 +67,10 @@ class MainActivityViewModel(
     suspend fun removeTask(task:Task): Boolean {
         return taskRepository.deleteTask(task)
     }
+
+    suspend fun changeTask(task: Task): Boolean {
+        return taskRepository.patchTask(task)
+    }
+
+
 }
