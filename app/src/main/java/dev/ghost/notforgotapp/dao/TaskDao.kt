@@ -21,6 +21,9 @@ interface TaskDao {
     @Delete
     fun delete(task:Task)
 
+    @Query("Delete from tasks")
+    fun deleteAll()
+
     @Transaction
     @Query("Select * from tasks")
     fun getTasksFullInfo():LiveData<List<TaskWithCategoryAndPriority>>

@@ -15,6 +15,8 @@ interface PriorityDao {
     @Query("Select * from priorities where id = :id")
     fun getById(id:Int): Priority
 
+    @Query("Delete from priorities")
+    fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun add(tasks:List<Priority>)

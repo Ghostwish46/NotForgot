@@ -18,7 +18,8 @@ interface CategoryDao {
     @Query("Select * from categories")
     fun getCategoriesWithTasks():LiveData<List<CategoryAndTasks>>
 
-
+    @Query("Delete from categories")
+    fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun add(category: Category)

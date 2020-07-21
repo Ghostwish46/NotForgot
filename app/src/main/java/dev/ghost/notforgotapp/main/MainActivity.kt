@@ -2,6 +2,8 @@ package dev.ghost.notforgotapp.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,13 +14,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.R
-import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
 import dev.ghost.notforgotapp.helpers.Status
+import dev.ghost.notforgotapp.login.LoginActivity
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import dev.ghost.notforgotapp.taskedit.TaskEditActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -41,9 +45,7 @@ class MainActivity : AppCompatActivity() {
         (application as App).appComponent.injectsMainActivity(this)
 
         mainActivityViewModel = MainActivityViewModel(
-            applicationContext as App, sharedPreferences.getPreferences()
-                .getString("token", "")!!
-        )
+            applicationContext as App)
 
         mainActivityViewModel.mainActivityAdapter = TaskAdapter(this, mainActivityViewModel)
         recyclerMainTasks.adapter = mainActivityViewModel.mainActivityAdapter
@@ -60,7 +62,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val item = (mainActivityViewModel.mainActivityAdapter.getItemByViewHolder(viewHolder))
+                    val item =
+                        (mainActivityViewModel.mainActivityAdapter.getItemByViewHolder(viewHolder))
 
                     if (item is TaskWithCategoryAndPriority)
                         mainActivityViewModel.viewModelScope
@@ -126,5 +129,33 @@ class MainActivity : AppCompatActivity() {
     fun addNewTaskTransition(v: View) {
         val intentNewTask = Intent(this, TaskEditActivity::class.java)
         startActivity(intentNewTask)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId)
+        {
+            R.id.action_logout ->
+            {
+                mainActivityViewModel.viewModelScope.launch {
+                    withContext(Dispatchers.IO)
+                    {
+                        mainActivityViewModel.clearAllData()
+                    }
+                    withContext(Dispatchers.Main)
+                    {
+                        val intentLogin = Intent(this@MainActivity, LoginActivity::class.java)
+                        intentLogin.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                        startActivity(intentLogin)
+                    }
+                }
+
+            }
+        }
+        return true
     }
 }

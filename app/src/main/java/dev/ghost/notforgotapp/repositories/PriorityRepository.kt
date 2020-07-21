@@ -20,4 +20,9 @@ class PriorityRepository(
             priorityDao.add(priorities)
         }
     }
+
+    suspend fun deleteAll()
+    {
+        priorityDao.deleteAll()
+    }
 }

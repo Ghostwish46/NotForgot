@@ -42,4 +42,9 @@ class CategoryRepository(
 
         }
     }
+
+    suspend fun deleteAll()
+    {
+        categoryDao.deleteAll()
+    }
 }

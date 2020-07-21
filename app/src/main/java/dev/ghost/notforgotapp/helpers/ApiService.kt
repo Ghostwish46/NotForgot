@@ -4,7 +4,6 @@ import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.entities.User
-import dev.ghost.notforgotapp.repositories.DeleteTaskResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.*

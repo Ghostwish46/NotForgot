@@ -24,6 +24,7 @@
     <string name="action_cancel">Отмена</string>
     <string name="action_yes">Да!</string>
     <string name="action_save_question">Имеются несохраненные данные. Сохранить?</string>
+    <string name="action_logout">Выход</string>
 
     <string name="text_until">До %s</string>
     <string name="text_done">Сделано</string>

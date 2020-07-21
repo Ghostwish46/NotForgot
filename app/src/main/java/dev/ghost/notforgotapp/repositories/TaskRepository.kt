@@ -95,4 +95,9 @@ class TaskRepository(
             }
         }
     }
+
+    suspend fun deleteAll()
+    {
+        taskDao.deleteAll()
+    }
 }

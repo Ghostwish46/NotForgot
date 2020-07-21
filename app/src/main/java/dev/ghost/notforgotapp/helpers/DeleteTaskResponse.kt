@@ -1,4 +1,4 @@
-package dev.ghost.notforgotapp.repositories
+package dev.ghost.notforgotapp.helpers
 
 import com.google.gson.annotations.SerializedName
 
