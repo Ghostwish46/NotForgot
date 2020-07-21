@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
+import retrofit2.http.DELETE
 
 @Dao
 interface TaskDao {
@@ -16,6 +17,9 @@ interface TaskDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun add(task:Task)
+
+    @Delete
+    fun delete(task:Task)
 
     @Transaction
     @Query("Select * from tasks")

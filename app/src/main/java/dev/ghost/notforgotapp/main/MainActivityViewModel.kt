@@ -47,7 +47,7 @@ class MainActivityViewModel(
     val loadingState: LiveData<LoadingState>
         get() = _loadingState
 
-    private fun fetchTasks() {
+    internal fun fetchTasks() {
         viewModelScope.launch {
             try {
                 _loadingState.value = LoadingState.LOADING
@@ -60,5 +60,9 @@ class MainActivityViewModel(
                 _loadingState.value = LoadingState.error(e.message)
             }
         }
+    }
+
+    suspend fun removeTask(task:Task): Boolean {
+        return taskRepository.deleteTask(task)
     }
 }

@@ -23,7 +23,6 @@ class TaskRepository(
     val data = taskDao.getAll()
     val fullInfoData = taskDao.getTasksFullInfo()
 
-
     suspend fun refresh() {
         withContext(Dispatchers.IO) {
             val tasks = apiService.getTasksAsync(token).await()
@@ -70,8 +69,28 @@ class TaskRepository(
                 taskDao.add(changedTask)
                 return@withContext true
             } else {
-                // Insert local task to db.
-                //taskDao.add(listOf(task))
+                // Update local task to db.
+                return@withContext false
+            }
+        }
+    }
+
+    suspend fun deleteTask(task: Task): Boolean {
+        return withContext(Dispatchers.IO)
+        {
+            val taskRequest = apiService
+                .deleteTaskAsync(task.id, token)
+            try {
+                val response = taskRequest.await()
+                if (response.isSuccessful) {
+                    taskDao.delete(task)
+                    return@withContext true
+                } else {
+                    // Delete local task to db.
+                    return@withContext false
+                }
+            } catch (ex: Exception) {
+                // Set isDeleted without sync.
                 return@withContext false
             }
         }

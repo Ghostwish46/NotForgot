@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.dao.TaskDao
 import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.Priority
@@ -38,9 +39,11 @@ class TaskEditViewModel(
             token
         )
     private val categoryRepository =
-        CategoryRepository(ApiUtils.apiService,
-        appDatabase.categoryDao,
-        token)
+        CategoryRepository(
+            ApiUtils.apiService,
+            appDatabase.categoryDao,
+            token
+        )
 
     var allCategories: LiveData<List<Category>>
     var allPriorities: LiveData<List<Priority>>
@@ -60,14 +63,31 @@ class TaskEditViewModel(
             }
         }
 
-    var categoryForAdding:Category = Category(0, "")
+    var categoryForAdding: Category = Category(0, "")
 
     fun setEndDate(value: Long) {
         currentTask?.deadline = value
     }
 
-    fun checkTaskParams(): String {
-        return ""
+    fun checkUnsavedChanges(): Boolean {
+        return !currentTask?.title.isNullOrEmpty()
+                && !currentTask?.description.isNullOrEmpty()
+    }
+
+    fun checkName(): Int?
+    {
+        return if (currentTask?.title.isNullOrBlank())
+            R.string.error_task_name
+        else
+            null
+    }
+
+    fun checkDescription(): Int?
+    {
+        return if (currentTask?.description.isNullOrBlank())
+            R.string.error_task_description
+        else
+            null
     }
 
     suspend fun changeTask(): Boolean {
@@ -77,8 +97,7 @@ class TaskEditViewModel(
             taskRepository.patchTask(currentTask!!)
     }
 
-    suspend fun addCategory():Boolean
-    {
+    suspend fun addCategory(): Boolean {
         return categoryRepository.postCategory(categoryForAdding)
     }
 }

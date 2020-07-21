@@ -22,6 +22,8 @@
     <string name="action_edit">Редактировать</string>
     <string name="action_save">Сохранить</string>
     <string name="action_cancel">Отмена</string>
+    <string name="action_yes">Да!</string>
+    <string name="action_save_question">Имеются несохраненные данные. Сохранить?</string>
 
     <string name="text_until">До %s</string>
     <string name="text_done">Сделано</string>
@@ -31,8 +33,11 @@
     <string name="text_task_saved_successfully">Дело успешно сохранено.</string>
     <string name="text_category_saved_successfully">Категория успешно добавлена.</string>
     <string name="text_api_saving_error">Ошибка соединения. Данные сохранены локально.</string>
+    <string name="text_task_deleted">Задача удалена.</string>
 
 
+    <string name="error_task_name">Название должно быть указано</string>
+    <string name="error_task_description">Описание должно быть указано</string>
 
     <string name="title_activity_main">MainActivity</string>
 </resources>

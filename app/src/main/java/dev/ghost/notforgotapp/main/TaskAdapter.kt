@@ -73,7 +73,12 @@ class TaskAdapter internal constructor(context: Context) :
                 holder.itemView.context.startActivity(intentInfo)
             }
         }
+    }
 
+
+    fun getItemByViewHolder(viewHolder: RecyclerView.ViewHolder):ItemForList
+    {
+        return allItems[viewHolder.adapterPosition]
     }
 
     internal fun updateData(tasksFullInfo: List<TaskWithCategoryAndPriority>) {

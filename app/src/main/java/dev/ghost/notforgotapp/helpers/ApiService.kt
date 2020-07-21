@@ -4,6 +4,7 @@ import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.entities.User
+import dev.ghost.notforgotapp.repositories.DeleteTaskResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.*
@@ -41,6 +42,13 @@ interface ApiService {
         @Query("api_token") token: String,
         @Body task: Task
     ): Deferred<Response<Task>>
+
+    @DELETE("tasks/{id}")
+    @Headers("Accept:application/json")
+    fun deleteTaskAsync(
+        @Path("id") id:Int,
+        @Query("api_token") token: String
+    ): Deferred<Response<DeleteTaskResponse>>
 
     @POST("categories")
     fun addCategoryAsync(

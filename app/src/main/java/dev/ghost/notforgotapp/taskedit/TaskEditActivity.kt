@@ -149,8 +149,11 @@ class TaskEditActivity : AppCompatActivity() {
         }
     }
 
-    fun editTask(view: View) {
-        // НУЖНА ПРОВЕРКА
+    fun editTask(view: View?) {
+        if (!hasNoErrors())
+        {
+            return
+        }
 
         taskEditViewModel.viewModelScope.launch {
             withContext(Dispatchers.IO)
@@ -221,5 +224,61 @@ class TaskEditActivity : AppCompatActivity() {
                 .setNegativeButton(R.string.action_cancel)
                 { dialog, which -> dialog.dismiss() }
                 .show()
+    }
+
+    private fun hasNoErrors(): Boolean {
+        var noErrors = true
+        val nameResult = taskEditViewModel.checkName()
+        textInputLayoutEditTaskName.error =
+            if (nameResult != null)
+            {
+                textInputLayoutEditTaskName.errorIconDrawable =
+                    (getDrawable(R.drawable.icon_error))
+                noErrors = false
+                getString(nameResult)
+            }
+            else
+            {
+                textInputLayoutEditTaskName.errorIconDrawable = null
+                null
+            }
+
+        val descriptionResult = taskEditViewModel.checkDescription()
+        textInputLayoutEditTaskDescription.error =
+        if (descriptionResult != null)
+        {
+            textInputLayoutEditTaskDescription.errorIconDrawable =
+                (getDrawable(R.drawable.icon_error))
+            noErrors = false
+            getString(descriptionResult)
+        }
+        else
+        {
+            textInputLayoutEditTaskDescription.errorIconDrawable = null
+            null
+        }
+
+        return noErrors
+    }
+
+    override fun onBackPressed() {
+        if (taskEditViewModel.checkUnsavedChanges()) {
+            val alertSave = AlertDialog.Builder(
+                this@TaskEditActivity,
+                R.style.DialogTheme
+            )
+                .setPositiveButton(R.string.action_yes)
+                { dialog, which ->
+                    editTask(null)
+                }
+                .setNegativeButton(R.string.action_cancel)
+                { dialog, which ->
+                    dialog.dismiss()
+                    super.onBackPressed()
+                }
+                .setMessage(R.string.action_save_question)
+                .show()
+        } else
+            super.onBackPressed()
     }
 }
