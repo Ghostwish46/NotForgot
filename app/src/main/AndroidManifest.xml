@@ -14,13 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".taskedit.TaskEditActivity"></activity>
+        <activity
+            android:name=".registration.RegistrationActivity"
+            android:noHistory="true" />
+        <activity android:name=".taskedit.TaskEditActivity" />
         <activity android:name=".taskinfo.TaskInfoActivity" />
         <activity
             android:name=".main.MainActivity"
             android:label="@string/app_name" />
         <activity
             android:name=".login.LoginActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

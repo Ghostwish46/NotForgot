@@ -1,36 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
+
         <variable
             name="user"
             type="dev.ghost.notforgotapp.entities.User" />
     </data>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".login.LoginActivity"
-    style="@style/BackgroundConstraint">
 
-    <include
-        android:id="@+id/includeRegistration"
-        layout="@layout/layout_registration"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:user="@={user}"
-        />
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        style="@style/BackgroundConstraint"
+        tools:context=".login.LoginActivity">
 
-    <include
-        android:id="@+id/includeLogin"
-        layout="@layout/layout_login"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:user="@={user}"
-        />
+        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_cornered_container"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.498"
+            tools:showIn="@layout/activity_login">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/textView"
+                style="@style/HeaderTextView"
+                android:text="@string/header_login"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutLoginMail"
+                android:background="@drawable/background_edit_text"
+                app:hintTextColor="@color/colorVeryDarkGray"
+                app:errorEnabled="true"
+                android:paddingTop="@dimen/margin_small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal">
+
+                <EditText
+                    android:id="@+id/editTextLoginMail"
+                    style="@style/InputEditText"
+                    android:hint="@string/hint_mail"
+                    android:text="@={user.mail}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutLoginPassword"
+                android:background="@drawable/background_edit_text"
+                app:hintTextColor="@color/colorVeryDarkGray"
+                app:errorEnabled="true"
+                android:paddingTop="@dimen/margin_small"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal">
+
+                <EditText
+                    android:id="@+id/editTexLoginPassword"
+                    style="@style/InputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:ems="10"
+                    android:hint="@string/hint_password"
+                    android:inputType="textPassword"
+                    android:text="@={user.password}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/buttonLoginAction"
+                style="@style/BrightButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:onClick="loginAction"
+                android:text="@string/header_login" />
+
+            <Button
+                android:id="@+id/buttonLoginRegistration"
+                style="@style/GrayButton"
+                android:onClick="goToRegistration"
+                android:text="@string/header_registration" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -11,8 +11,16 @@ import retrofit2.http.*
 interface ApiService {
     @POST("login")
     @FormUrlEncoded
-    fun registrationPostAsync(
+    fun loginPostAsync(
         @Field("email") email: String,
+        @Field("password") password: String
+    ): Deferred<Response<User>>
+
+    @POST("register")
+    @FormUrlEncoded
+    fun registerPostAsync(
+        @Field("email") email: String,
+        @Field("name") name: String,
         @Field("password") password: String
     ): Deferred<Response<User>>
 

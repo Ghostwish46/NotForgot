@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var sharedPreferences: SharedPreferencesStorage
 
-
     private lateinit var mainActivityViewModel: MainActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +44,8 @@ class MainActivity : AppCompatActivity() {
         (application as App).appComponent.injectsMainActivity(this)
 
         mainActivityViewModel = MainActivityViewModel(
-            applicationContext as App)
+            applicationContext as App
+        )
 
         mainActivityViewModel.mainActivityAdapter = TaskAdapter(this, mainActivityViewModel)
         recyclerMainTasks.adapter = mainActivityViewModel.mainActivityAdapter
@@ -106,8 +106,13 @@ class MainActivity : AppCompatActivity() {
         taskTouchHelper.attachToRecyclerView(recyclerMainTasks)
 
 
-
         mainActivityViewModel.tasksFullInfoData.observe(this, Observer {
+            includeNoTasks.visibility =
+                if (it.isEmpty())
+                    View.VISIBLE
+                else
+                    View.INVISIBLE
+
             mainActivityViewModel.mainActivityAdapter.updateData(it)
         })
 
@@ -137,10 +142,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId)
-        {
-            R.id.action_logout ->
-            {
+        when (item.itemId) {
+            R.id.action_logout -> {
                 mainActivityViewModel.viewModelScope.launch {
                     withContext(Dispatchers.IO)
                     {

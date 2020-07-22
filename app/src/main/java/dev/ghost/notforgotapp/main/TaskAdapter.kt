@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 
 class TaskAdapter internal constructor(
     context: Context,
-    val mainActivityViewModel: MainActivityViewModel
+    private val mainActivityViewModel: MainActivityViewModel
 ) :
     RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
@@ -88,8 +88,6 @@ class TaskAdapter internal constructor(
                 } else {
                     holder.itemView.checkBoxTaskContentDone.isChecked = true
                 }
-
-
             }
         }
     }

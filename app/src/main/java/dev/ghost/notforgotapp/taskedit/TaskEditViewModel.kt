@@ -2,26 +2,16 @@ package dev.ghost.notforgotapp.taskedit
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.R
-import dev.ghost.notforgotapp.dao.TaskDao
 import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
-import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
 import dev.ghost.notforgotapp.repositories.CategoryRepository
 import dev.ghost.notforgotapp.repositories.TaskRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
-import java.lang.Exception
-import javax.inject.Inject
 
 class TaskEditViewModel(
     application: Application
@@ -77,7 +67,7 @@ class TaskEditViewModel(
     fun checkName(): Int?
     {
         return if (currentTask?.title.isNullOrBlank())
-            R.string.error_task_name
+            R.string.error_blank_task_title
         else
             null
     }
@@ -85,7 +75,7 @@ class TaskEditViewModel(
     fun checkDescription(): Int?
     {
         return if (currentTask?.description.isNullOrBlank())
-            R.string.error_task_description
+            R.string.error_blank_task_description
         else
             null
     }

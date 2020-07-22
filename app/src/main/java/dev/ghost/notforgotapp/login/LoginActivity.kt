@@ -14,8 +14,8 @@ import dev.ghost.notforgotapp.databinding.ActivityLoginBinding
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.main.MainActivity
+import dev.ghost.notforgotapp.registration.RegistrationActivity
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,14 +31,24 @@ class LoginActivity : AppCompatActivity() {
     lateinit var mApiService: ApiService
 
     //ViewModel instance.
-    private lateinit var registrationViewModel: RegistrationViewModel
+    private lateinit var registrationViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme_Login)
 
+        (applicationContext as App).appComponent.injectsLoginActivity(this)
+
+        if (sharedPreferences.getPreferences()
+                .getString("token", "")?.isNotEmpty()!!
+        ) {
+            val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
+
+            startActivity(intentMain)
+        }
+
         registrationViewModel = ViewModelProvider(this)
-            .get(RegistrationViewModel::class.java)
+            .get(LoginViewModel::class.java)
 
         mApiService = ApiUtils.apiService
 
@@ -50,39 +60,19 @@ class LoginActivity : AppCompatActivity() {
 
         bindingUser.user = registrationViewModel.currentUser
         bindingUser.lifecycleOwner = this
-
-        (applicationContext as App).appComponent.injectsLoginActivity(this)
-
-        if (sharedPreferences.getPreferences()
-                .getString("token", "")?.isNotEmpty()!!
-        ) {
-            val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
-            startActivity(intentMain)
-        }
-
     }
 
-    // Function for view's visibility changing.
-    private fun View.changeVisibility() {
-        if (visibility == View.VISIBLE) {
-            visibility = View.GONE
-        } else {
-            visibility = View.VISIBLE
-        }
-    }
 
     // Actions on login click.
     fun loginAction(view: View) {
         GlobalScope.launch(Dispatchers.Main) {
-            val loginRequest = mApiService.registrationPostAsync(
+            val loginRequest = mApiService.loginPostAsync(
                 registrationViewModel.currentUser.mail,
                 registrationViewModel.currentUser.password
             )
             try {
                 val response = loginRequest.await()
                 if (response.isSuccessful) {
-//                    Toast.makeText(this@LoginActivity, response.body()?.apiToken,
-//                        LENGTH_LONG).show()
                     sharedPreferences.getEditor()
                         .putString("token", response.body()?.apiToken)
                         .apply()
@@ -100,14 +90,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Switch visibility of login/registration layout.
-    fun switchLoginRegistration(view: View) {
-        includeLogin.changeVisibility()
-        includeRegistration.changeVisibility()
-    }
 
-    // Actions on registration click.
-    fun registrationAction(view: View) {
 
+    fun goToRegistration(view: View) {
+        val intentRegistration = Intent(this, RegistrationActivity::class.java)
+        intentRegistration.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+        startActivity(intentRegistration)
     }
 }

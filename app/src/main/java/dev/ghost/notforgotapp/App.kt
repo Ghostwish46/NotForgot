@@ -17,7 +17,5 @@ open class  App : Application() {
         DaggerAppComponent
             .factory()
             .create(this)
-
-
     }
 }

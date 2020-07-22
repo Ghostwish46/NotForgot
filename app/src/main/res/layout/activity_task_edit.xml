@@ -124,13 +124,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_normal"
-                    app:hintTextColor="@color/colorVeryDarkGray"
                     app:errorIconDrawable="@drawable/icon_error"
-                    android:background="@drawable/background_edit_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEditTaskName"
-                    app:errorEnabled="true">
+                    android:background="@drawable/background_edit_text"
+                    app:hintTextColor="@color/colorVeryDarkGray"
+                    app:errorEnabled="true"
+                    android:paddingTop="@dimen/margin_small">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextTaskEditDescription"
