@@ -33,10 +33,10 @@
 
     <string name="text_task_saved_successfully">Дело успешно сохранено.</string>
     <string name="text_category_saved_successfully">Категория успешно добавлена.</string>
-    <string name="text_api_saving_error">Ошибка соединения. Данные сохранены локально.</string>
+    <string name="text_api_saving_error">Данные сохранены локально.</string>
     <string name="text_task_deleted">Задача удалена.</string>
+    <string name="text_task_deleted_locally">Задача удалена локально.</string>
     <string name="text_no_tasks">У вас пока нет дел.\nСчастливый вы человек!</string>
-
 
     <string name="error_blank_task_title">Название должно быть указано</string>
     <string name="error_blank_task_description">Описание должно быть указано</string>
@@ -45,6 +45,13 @@
     <string name="error_blank_name">Имя должно быть указано</string>
     <string name="error_different_passwords">Пароли должны совпадать</string>
     <string name="error_connection_failed">Не удалось выполнить запрос. Проверьте ваше интернет-соединение</string>
+
+    <string name="code_200">Все хорошо</string>
+    <string name="code_400">Неверный запрос</string>
+    <string name="code_401">Пользователь не авторизации</string>
+    <string name="code_404">Страница не найдена</string>
+    <string name="code_500">Ошибка на стороне сервера</string>
+    <string name="code_exception">Не удалось установить подключение.</string>
 
     <string name="title_activity_main">MainActivity</string>
 </resources>

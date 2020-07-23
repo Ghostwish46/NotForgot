@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.dao.TaskDao
+import dev.ghost.notforgotapp.entities.EntityState
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.helpers.ApiService
+import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,45 +39,57 @@ class TaskRepository(
         }
     }
 
-    suspend fun postTask(task: Task): Boolean {
+    suspend fun postTask(task: Task): HttpResponseCode {
         return withContext(Dispatchers.IO)
         {
-            val taskRequest = apiService
-                .addTaskAsync(token, task)
-            val response = taskRequest.await()
-            if (response.isSuccessful) {
-                val newTask = response.body()!!
-                newTask.updateKeys()
-                taskDao.add(newTask)
-                return@withContext true
-            } else {
-                // Insert local task to db.
-                //taskDao.add(listOf(task))
-
-                return@withContext false
+            try {
+                val taskRequest = apiService
+                    .addTaskAsync(token, task)
+                val response = taskRequest.await()
+                if (response.isSuccessful) {
+                    val newTask = response.body()!!
+                    newTask.updateKeys()
+                    taskDao.add(newTask)
+                } else {
+                    task.entityState = EntityState.ADDED
+                    taskDao.add(task)
+                }
+                HttpResponseCode.getByCode(response.code())
+            } catch (ex: Exception) {
+                task.entityState = EntityState.ADDED
+                taskDao.add(task)
+                HttpResponseCode.getByCode(-1)
             }
         }
     }
 
-    suspend fun patchTask(task: Task): Boolean {
+    suspend fun patchTask(task: Task): HttpResponseCode {
         return withContext(Dispatchers.IO)
         {
-            val taskRequest = apiService
-                .patchTaskAsync(task.id, token, task)
-            val response = taskRequest.await()
-            if (response.isSuccessful) {
-                val changedTask = response.body()!!
-                changedTask.updateKeys()
-                taskDao.add(changedTask)
-                return@withContext true
-            } else {
-                // Update local task to db.
-                return@withContext false
+            try {
+                val taskRequest = apiService
+                    .patchTaskAsync(task.id, token, task)
+                val response = taskRequest.await()
+                if (response.isSuccessful) {
+                    val changedTask = response.body()!!
+                    changedTask.updateKeys()
+                    taskDao.add(changedTask)
+                } else {
+                    if (task.entityState != EntityState.ADDED)
+                        task.entityState = EntityState.MODIFIED
+                    taskDao.add(task)
+                }
+                HttpResponseCode.getByCode(response.code())
+            } catch (ex: Exception) {
+                if (task.entityState != EntityState.ADDED)
+                    task.entityState = EntityState.MODIFIED
+                taskDao.add(task)
+                HttpResponseCode.getByCode(-1)
             }
         }
     }
 
-    suspend fun deleteTask(task: Task): Boolean {
+    suspend fun deleteTask(task: Task): HttpResponseCode {
         return withContext(Dispatchers.IO)
         {
             val taskRequest = apiService
@@ -84,20 +98,21 @@ class TaskRepository(
                 val response = taskRequest.await()
                 if (response.isSuccessful) {
                     taskDao.delete(task)
-                    return@withContext true
                 } else {
-                    // Delete local task to db.
-                    return@withContext false
+                    task.entityState = EntityState.DELETED
+                    taskDao.add(task)
                 }
+                HttpResponseCode.getByCode(response.code())
+
             } catch (ex: Exception) {
-                // Set isDeleted without sync.
-                return@withContext false
+                task.entityState = EntityState.DELETED
+                taskDao.add(task)
+                HttpResponseCode.getByCode(-1)
             }
         }
     }
 
-    suspend fun deleteAll()
-    {
+    suspend fun deleteAll() {
         taskDao.deleteAll()
     }
 }

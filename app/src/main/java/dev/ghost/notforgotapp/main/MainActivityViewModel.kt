@@ -7,6 +7,7 @@ import dev.ghost.notforgotapp.dao.TaskDao
 import dev.ghost.notforgotapp.entities.*
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
+import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.helpers.LoadingState
 import dev.ghost.notforgotapp.repositories.CategoryRepository
 import dev.ghost.notforgotapp.repositories.PriorityRepository
@@ -67,11 +68,11 @@ class MainActivityViewModel(
         }
     }
 
-    suspend fun removeTask(task: Task): Boolean {
+    suspend fun removeTask(task: Task): HttpResponseCode {
         return taskRepository.deleteTask(task)
     }
 
-    suspend fun changeTask(task: Task): Boolean {
+    suspend fun changeTask(task: Task): HttpResponseCode {
         return taskRepository.patchTask(task)
     }
 

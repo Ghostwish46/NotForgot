@@ -6,8 +6,10 @@ import dev.ghost.notforgotapp.dao.CategoryDao
 import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.CategoryAndTasks
 import dev.ghost.notforgotapp.helpers.ApiService
+import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class CategoryRepository(
@@ -26,25 +28,25 @@ class CategoryRepository(
         }
     }
 
-    suspend fun postCategory(category: Category):Boolean {
+    suspend fun postCategory(category: Category): HttpResponseCode {
         return withContext(Dispatchers.IO)
         {
-            val categoryRequest = apiService
-                .addCategoryAsync(token, category)
-            val response = categoryRequest.await()
-            if (response.isSuccessful) {
-                val newCategory = response.body()!!
-                categoryDao.add(newCategory)
-                true
-            } else {
-                false
+            try {
+                val categoryRequest = apiService
+                    .addCategoryAsync(token, category)
+                val response = categoryRequest.await()
+                if (response.isSuccessful) {
+                    val newCategory = response.body()!!
+                    categoryDao.add(newCategory)
+                }
+                HttpResponseCode.getByCode(response.code())
+            } catch (ex: Exception) {
+                HttpResponseCode.getByCode(-1)
             }
-
         }
     }
 
-    suspend fun deleteAll()
-    {
+    suspend fun deleteAll() {
         categoryDao.deleteAll()
     }
 }

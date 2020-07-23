@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
     )]
         , indices = [Index("categoryId"), Index("priorityId")])
 data class Task(
-    @PrimaryKey val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var title: String = "",
     var description: String = "",
     var done: Int = 0,
@@ -33,7 +33,8 @@ data class Task(
     @SerializedName("category_id")
     var categoryId: Int = 0,
     @SerializedName("priority_id")
-    var priorityId: Int = 0
+    var priorityId: Int = 0,
+    var entityState: EntityState = EntityState.UNCHANGED
 ) :ItemForList, Parcelable {
     @Ignore
     override var type: ItemType = ItemType.Task

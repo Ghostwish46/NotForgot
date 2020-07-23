@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
+import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.helpers.Status
 import dev.ghost.notforgotapp.login.LoginActivity
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
@@ -68,14 +69,20 @@ class MainActivity : AppCompatActivity() {
                     if (item is TaskWithCategoryAndPriority)
                         mainActivityViewModel.viewModelScope
                             .launch {
-                                if (mainActivityViewModel.removeTask(item.task)) {
+                                val result = mainActivityViewModel.removeTask(item.task)
+                                if (result == HttpResponseCode.OK) {
                                     Toast.makeText(
                                         this@MainActivity,
                                         getString(R.string.text_task_deleted),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 } else {
-                                    // Connection error?
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        getString(result.getErrorMessage()) + " "
+                                                + getString(R.string.text_task_deleted_locally),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                 }

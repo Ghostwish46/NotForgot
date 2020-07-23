@@ -2,11 +2,13 @@ package dev.ghost.notforgotapp.helpers
 
 import android.content.Context
 import androidx.arch.core.util.Function
+import androidx.databinding.adapters.Converters
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import dev.ghost.notforgotapp.dao.CategoryDao
 import dev.ghost.notforgotapp.dao.PriorityDao
 import dev.ghost.notforgotapp.dao.TaskDao
@@ -21,6 +23,7 @@ import java.time.OffsetTime
     entities = [Task::class, Priority::class, Category::class],
     version = 1, exportSchema = false
 )
+@TypeConverters(StateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract val taskDao: TaskDao
     abstract val priorityDao: PriorityDao

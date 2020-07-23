@@ -9,7 +9,7 @@ import retrofit2.http.DELETE
 @Dao
 interface TaskDao {
     @Transaction
-    @Query("Select * from tasks")
+    @Query("Select * from tasks where entityState != 3")
     fun getAll():LiveData<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,6 +25,6 @@ interface TaskDao {
     fun deleteAll()
 
     @Transaction
-    @Query("Select * from tasks")
+    @Query("Select * from tasks where entityState != 3")
     fun getTasksFullInfo():LiveData<List<TaskWithCategoryAndPriority>>
 }

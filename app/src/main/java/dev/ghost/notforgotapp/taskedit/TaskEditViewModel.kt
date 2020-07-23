@@ -10,6 +10,7 @@ import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
+import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.repositories.CategoryRepository
 import dev.ghost.notforgotapp.repositories.TaskRepository
 
@@ -80,14 +81,14 @@ class TaskEditViewModel(
             null
     }
 
-    suspend fun changeTask(): Boolean {
+    suspend fun changeTask(): HttpResponseCode {
         return if (currentTask?.id == 0)
             taskRepository.postTask(currentTask!!)
         else
             taskRepository.patchTask(currentTask!!)
     }
 
-    suspend fun addCategory(): Boolean {
+    suspend fun addCategory(): HttpResponseCode {
         return categoryRepository.postCategory(categoryForAdding)
     }
 }

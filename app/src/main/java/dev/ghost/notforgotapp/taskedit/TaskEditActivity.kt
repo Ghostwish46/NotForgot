@@ -22,6 +22,7 @@ import dev.ghost.notforgotapp.entities.Category
 import dev.ghost.notforgotapp.entities.Priority
 import dev.ghost.notforgotapp.entities.Task
 import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
+import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.main.MainActivity
 import kotlinx.android.synthetic.main.activity_task_edit.*
 import kotlinx.coroutines.Dispatchers
@@ -150,8 +151,7 @@ class TaskEditActivity : AppCompatActivity() {
     }
 
     fun editTask(view: View?) {
-        if (!hasNoErrors())
-        {
+        if (!hasNoErrors()) {
             return
         }
 
@@ -161,14 +161,15 @@ class TaskEditActivity : AppCompatActivity() {
                 val result = taskEditViewModel.changeTask()
                 withContext(Dispatchers.Main)
                 {
-                    if (result) {
+                    if (result == HttpResponseCode.OK) {
                         Toast.makeText(
                             this@TaskEditActivity, getString(R.string.text_task_saved_successfully),
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         Toast.makeText(
-                            this@TaskEditActivity, getString(R.string.text_api_saving_error),
+                            this@TaskEditActivity, getString(result.getErrorMessage()) +
+                                    " " + getString(R.string.text_api_saving_error),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -202,7 +203,7 @@ class TaskEditActivity : AppCompatActivity() {
                             val result = taskEditViewModel.addCategory()
                             withContext(Dispatchers.Main)
                             {
-                                if (result) {
+                                if (result == HttpResponseCode.OK) {
                                     Toast.makeText(
                                         this@TaskEditActivity,
                                         getString(R.string.text_category_saved_successfully),
@@ -211,7 +212,7 @@ class TaskEditActivity : AppCompatActivity() {
                                 } else {
                                     Toast.makeText(
                                         this@TaskEditActivity,
-                                        getString(R.string.text_api_saving_error),
+                                        getString(result.getErrorMessage()),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
@@ -230,33 +231,27 @@ class TaskEditActivity : AppCompatActivity() {
         var noErrors = true
         val nameResult = taskEditViewModel.checkName()
         textInputLayoutEditTaskName.error =
-            if (nameResult != null)
-            {
+            if (nameResult != null) {
                 textInputLayoutEditTaskName.errorIconDrawable =
                     (getDrawable(R.drawable.icon_error))
                 noErrors = false
                 getString(nameResult)
-            }
-            else
-            {
+            } else {
                 textInputLayoutEditTaskName.errorIconDrawable = null
                 null
             }
 
         val descriptionResult = taskEditViewModel.checkDescription()
         textInputLayoutEditTaskDescription.error =
-        if (descriptionResult != null)
-        {
-            textInputLayoutEditTaskDescription.errorIconDrawable =
-                (getDrawable(R.drawable.icon_error))
-            noErrors = false
-            getString(descriptionResult)
-        }
-        else
-        {
-            textInputLayoutEditTaskDescription.errorIconDrawable = null
-            null
-        }
+            if (descriptionResult != null) {
+                textInputLayoutEditTaskDescription.errorIconDrawable =
+                    (getDrawable(R.drawable.icon_error))
+                noErrors = false
+                getString(descriptionResult)
+            } else {
+                textInputLayoutEditTaskDescription.errorIconDrawable = null
+                null
+            }
 
         return noErrors
     }
