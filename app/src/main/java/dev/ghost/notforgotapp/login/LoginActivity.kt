@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.databinding.ActivityLoginBinding
@@ -16,80 +16,98 @@ import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.main.MainActivity
 import dev.ghost.notforgotapp.registration.RegistrationActivity
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_registration.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 class LoginActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var sharedPreferences: SharedPreferencesStorage
-
-    //ApiService instance.
-    lateinit var mApiService: ApiService
-
     //ViewModel instance.
-    private lateinit var registrationViewModel: LoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme_Login)
 
-        (applicationContext as App).appComponent.injectsLoginActivity(this)
+        loginViewModel = ViewModelProvider(this)
+            .get(LoginViewModel::class.java)
 
-        if (sharedPreferences.getPreferences()
-                .getString("token", "")?.isNotEmpty()!!
-        ) {
+        if (loginViewModel.getToken().isNotEmpty()) {
             val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
-
             startActivity(intentMain)
         }
 
-        registrationViewModel = ViewModelProvider(this)
-            .get(LoginViewModel::class.java)
-
-        mApiService = ApiUtils.apiService
 
         val bindingUser: ActivityLoginBinding = DataBindingUtil
             .setContentView(this, R.layout.activity_login)
 
         // Fill test data.
-        registrationViewModel.inflateUser()
+        loginViewModel.inflateUser()
 
-        bindingUser.user = registrationViewModel.currentUser
+        bindingUser.user = loginViewModel.currentUser
         bindingUser.lifecycleOwner = this
+    }
+
+    private fun hasNoErrors(): Boolean {
+        var noErrors = true
+
+        val mailResult = loginViewModel.checkMail()
+        textInputLayoutLoginMail.error =
+            if (mailResult != null) {
+                textInputLayoutLoginMail.errorIconDrawable =
+                    (getDrawable(R.drawable.icon_error))
+                noErrors = false
+                getString(mailResult)
+            } else {
+                textInputLayoutLoginMail.errorIconDrawable = null
+                null
+            }
+
+        val passwordResult = loginViewModel.checkPassword()
+        textInputLayoutLoginPassword.error =
+            if (passwordResult != null) {
+                textInputLayoutLoginPassword.errorIconDrawable =
+                    (getDrawable(R.drawable.icon_error))
+                noErrors = false
+                getString(passwordResult)
+            } else {
+                textInputLayoutLoginPassword.errorIconDrawable = null
+                null
+            }
+        return noErrors
     }
 
 
     // Actions on login click.
     fun loginAction(view: View) {
-        GlobalScope.launch(Dispatchers.Main) {
-            val loginRequest = mApiService.loginPostAsync(
-                registrationViewModel.currentUser.mail,
-                registrationViewModel.currentUser.password
-            )
-            try {
-                val response = loginRequest.await()
-                if (response.isSuccessful) {
-                    sharedPreferences.getEditor()
-                        .putString("token", response.body()?.apiToken)
-                        .apply()
-                    val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intentMain)
-                } else {
-                    Toast.makeText(
-                        this@LoginActivity, response.errorBody()?.string(),
-                        LENGTH_LONG
-                    ).show()
+        if (hasNoErrors()) {
+            loginViewModel.viewModelScope.launch {
+                withContext(Dispatchers.IO)
+                {
+                    val loginResult = loginViewModel.login()
+                    withContext(Dispatchers.Main)
+                    {
+                        if (loginResult) {
+                            val intentMain =
+                                Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intentMain)
+                        } else {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                getString(R.string.error_connection_failed),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }
                 }
-            } catch (ex: Exception) {
-                Toast.makeText(this@LoginActivity, ex.message, LENGTH_LONG).show();
             }
         }
     }
-
 
 
     fun goToRegistration(view: View) {

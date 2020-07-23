@@ -1,6 +1,12 @@
 package dev.ghost.notforgotapp.main
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.ConnectivityManager.NetworkCallback
+import android.net.Network
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,6 +14,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +25,7 @@ import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
 import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.helpers.Status
 import dev.ghost.notforgotapp.login.LoginActivity
+import dev.ghost.notforgotapp.login.LoginViewModel
 import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import dev.ghost.notforgotapp.taskedit.TaskEditActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,8 +41,8 @@ class MainActivity : AppCompatActivity() {
         const val TASK = "task"
     }
 
-    @Inject
-    lateinit var sharedPreferences: SharedPreferencesStorage
+    lateinit var connectivityManager: ConnectivityManager
+    lateinit var networkCallback: NetworkCallback
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,11 +50,25 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        (application as App).appComponent.injectsMainActivity(this)
+        mainActivityViewModel = ViewModelProvider(this)
+            .get(MainActivityViewModel::class.java)
 
-        mainActivityViewModel = MainActivityViewModel(
-            applicationContext as App
-        )
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkRequest = NetworkRequest.Builder().build()
+        networkCallback = object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+               mainActivityViewModel.viewModelScope.launch {
+                   withContext(Dispatchers.Main)
+                   {
+                       //syncTasks()
+                   }
+               }
+            }
+
+            override fun onLost(network: Network) {
+            }
+        }
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
         mainActivityViewModel.mainActivityAdapter = TaskAdapter(this, mainActivityViewModel)
         recyclerMainTasks.adapter = mainActivityViewModel.mainActivityAdapter
@@ -91,17 +113,17 @@ class MainActivity : AppCompatActivity() {
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder
                 ): Int {
-                    if (viewHolder.itemViewType == 1) {
+                    return if (viewHolder.itemViewType == 1) {
                         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
                         val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-                        return ItemTouchHelper.Callback.makeMovementFlags(
+                        ItemTouchHelper.Callback.makeMovementFlags(
                             dragFlags,
                             swipeFlags
                         )
                     } else {
                         val dragFlags = 0
                         val swipeFlags = 0
-                        return ItemTouchHelper.Callback.makeMovementFlags(
+                        ItemTouchHelper.Callback.makeMovementFlags(
                             dragFlags,
                             swipeFlags
                         )
@@ -111,7 +133,6 @@ class MainActivity : AppCompatActivity() {
 
         val taskTouchHelper = ItemTouchHelper(taskTouchHelperCallBack)
         taskTouchHelper.attachToRecyclerView(recyclerMainTasks)
-
 
         mainActivityViewModel.tasksFullInfoData.observe(this, Observer {
             includeNoTasks.visibility =
@@ -136,6 +157,26 @@ class MainActivity : AppCompatActivity() {
         swipeRefreshMain.setOnRefreshListener {
             mainActivityViewModel.fetchTasks()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+    private fun syncTasks() {
+        val animationView = View.inflate(this, R.layout.alert_sync_tasks, null)
+        val alertDialog =
+            AlertDialog.Builder(this, R.style.DialogTheme).setView(animationView)
+                .setMessage(R.string.text_tasks_syncing)
+                .setCancelable(true)
+                .show()
+
+
     }
 
     fun addNewTaskTransition(v: View) {
