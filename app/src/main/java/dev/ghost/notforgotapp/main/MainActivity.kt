@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
+import dev.ghost.notforgotapp.helpers.AppDatabase
 import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.helpers.Status
 import dev.ghost.notforgotapp.login.LoginActivity
@@ -50,25 +51,21 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+
         mainActivityViewModel = ViewModelProvider(this)
-            .get(MainActivityViewModel::class.java)
+            .get(MainActivityViewModel(application)::class.java)
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkRequest = NetworkRequest.Builder().build()
+
         networkCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
-               mainActivityViewModel.viewModelScope.launch {
-                   withContext(Dispatchers.Main)
-                   {
-                       //syncTasks()
-                   }
-               }
+                syncTasks()
             }
 
             override fun onLost(network: Network) {
             }
         }
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
 
         mainActivityViewModel.mainActivityAdapter = TaskAdapter(this, mainActivityViewModel)
         recyclerMainTasks.adapter = mainActivityViewModel.mainActivityAdapter
@@ -143,6 +140,7 @@ class MainActivity : AppCompatActivity() {
 
             mainActivityViewModel.mainActivityAdapter.updateData(it)
         })
+        mainActivityViewModel.unSynchronizedTasks.observe(this, Observer {  })
 
         mainActivityViewModel.loadingState.observe(this, Observer {
             when (it.status) {
@@ -161,22 +159,36 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val networkRequest = NetworkRequest.Builder().build()
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
     private fun syncTasks() {
-        val animationView = View.inflate(this, R.layout.alert_sync_tasks, null)
-        val alertDialog =
-            AlertDialog.Builder(this, R.style.DialogTheme).setView(animationView)
-                .setMessage(R.string.text_tasks_syncing)
-                .setCancelable(true)
-                .show()
 
+        mainActivityViewModel.viewModelScope.launch {
+            withContext(Dispatchers.Main)
+            {
+                val animationView = View.inflate(this@MainActivity, R.layout.alert_sync_tasks, null)
+                val alertDialog =
+                    AlertDialog.Builder(this@MainActivity, R.style.DialogTheme)
+                        .setView(animationView)
+                        .setMessage(R.string.text_tasks_syncing)
+                        .setCancelable(true)
+                        .show()
 
+                withContext(Dispatchers.IO)
+                {
+                    mainActivityViewModel.syncTasks()
+                }
+
+                alertDialog.dismiss()
+            }
+        }
     }
 
     fun addNewTaskTransition(v: View) {

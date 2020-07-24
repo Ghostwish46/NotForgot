@@ -1,17 +1,13 @@
 package dev.ghost.notforgotapp.repositories
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.dao.TaskDao
 import dev.ghost.notforgotapp.entities.EntityState
 import dev.ghost.notforgotapp.entities.Task
+import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
 import dev.ghost.notforgotapp.helpers.ApiService
 import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 
@@ -24,6 +20,8 @@ class TaskRepository(
 
     val data = taskDao.getAll()
     val fullInfoData = taskDao.getTasksFullInfo()
+    val unSynchronizedTasks = taskDao.getUnSynchronizedTasks()
+
 
     suspend fun refresh() {
         withContext(Dispatchers.IO) {
@@ -49,6 +47,7 @@ class TaskRepository(
                 if (response.isSuccessful) {
                     val newTask = response.body()!!
                     newTask.updateKeys()
+                    taskDao.delete(task)
                     taskDao.add(newTask)
                 } else {
                     task.entityState = EntityState.ADDED

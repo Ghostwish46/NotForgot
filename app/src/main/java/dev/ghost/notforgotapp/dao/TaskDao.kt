@@ -27,4 +27,8 @@ interface TaskDao {
     @Transaction
     @Query("Select * from tasks where entityState != 3")
     fun getTasksFullInfo():LiveData<List<TaskWithCategoryAndPriority>>
+
+    @Transaction
+    @Query("Select * from tasks where entityState != 0")
+    fun getUnSynchronizedTasks():LiveData<List<TaskWithCategoryAndPriority>>
 }

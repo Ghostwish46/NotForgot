@@ -3,7 +3,6 @@ package dev.ghost.notforgotapp.main
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
-import dev.ghost.notforgotapp.dao.TaskDao
 import dev.ghost.notforgotapp.entities.*
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
@@ -13,7 +12,6 @@ import dev.ghost.notforgotapp.repositories.CategoryRepository
 import dev.ghost.notforgotapp.repositories.PriorityRepository
 import dev.ghost.notforgotapp.repositories.TaskRepository
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 class MainActivityViewModel(
@@ -29,6 +27,7 @@ class MainActivityViewModel(
     lateinit var mainActivityAdapter: TaskAdapter
 
     val tasksFullInfoData: LiveData<List<TaskWithCategoryAndPriority>>
+    val unSynchronizedTasks: LiveData<List<TaskWithCategoryAndPriority>>
     private val categoriesData: LiveData<List<CategoryAndTasks>>
     private val prioritiesData: LiveData<List<Priority>>
 
@@ -46,6 +45,7 @@ class MainActivityViewModel(
         prioritiesData = priorityRepository.data
 
         tasksFullInfoData = taskRepository.fullInfoData
+        unSynchronizedTasks = taskRepository.unSynchronizedTasks
 
         fetchTasks()
     }
@@ -82,6 +82,33 @@ class MainActivityViewModel(
         priorityRepository.deleteAll()
         sharedPreferences.edit()
             .clear().apply()
+    }
+
+
+
+    suspend fun syncTasks()
+    {
+        val currentTasks = unSynchronizedTasks.value
+        if (currentTasks != null) {
+            for (task in currentTasks)
+            {
+                when (task.task.entityState)
+                {
+                    EntityState.DELETED ->
+                    {
+                        taskRepository.deleteTask(task.task)
+                    }
+                    EntityState.ADDED ->
+                    {
+                        taskRepository.postTask(task.task)
+                    }
+                    EntityState.MODIFIED ->
+                    {
+                        taskRepository.patchTask(task.task)
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -21,7 +21,7 @@ import java.time.OffsetTime
 
 @Database(
     entities = [Task::class, Priority::class, Category::class],
-    version = 1, exportSchema = false
+    version = 2, exportSchema = false
 )
 @TypeConverters(StateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
