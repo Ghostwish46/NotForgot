@@ -39,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
         if (loginViewModel.getToken().isNotEmpty()) {
             val intentMain = Intent(this@LoginActivity, MainActivity::class.java)
             startActivity(intentMain)
+            finish()
         }
 
 
@@ -95,6 +96,7 @@ class LoginActivity : AppCompatActivity() {
                             val intentMain =
                                 Intent(this@LoginActivity, MainActivity::class.java)
                             startActivity(intentMain)
+                            finish()
                         } else {
                             Toast.makeText(
                                 this@LoginActivity,
@@ -112,7 +114,6 @@ class LoginActivity : AppCompatActivity() {
 
     fun goToRegistration(view: View) {
         val intentRegistration = Intent(this, RegistrationActivity::class.java)
-        intentRegistration.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
         startActivity(intentRegistration)
     }
 }

@@ -25,6 +25,7 @@
     <string name="action_yes">Да!</string>
     <string name="action_save_question">Имеются несохраненные данные. Сохранить?</string>
     <string name="action_logout">Выход</string>
+    <string name="action_connection">Соединение</string>
 
     <string name="text_until">До %s</string>
     <string name="text_done">Сделано</string>
@@ -41,7 +42,7 @@
 
     <string name="error_blank_task_title">Название должно быть указано</string>
     <string name="error_blank_task_description">Описание должно быть указано</string>
-    <string name="error_blank_mail">Почта должна быть указана</string>
+    <string name="error_blank_mail">Почта должна быть указана в корректном формате</string>
     <string name="error_blank_password">Пароль должен быть указан</string>
     <string name="error_blank_name">Имя должно быть указано</string>
     <string name="error_different_passwords">Пароли должны совпадать</string>

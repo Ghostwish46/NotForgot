@@ -2,8 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_connection"
+        android:icon="@drawable/icon_connection"
+        app:showAsAction="always"
+        android:title="@string/action_connection"
+        />
+    <item
         android:id="@+id/action_logout"
         android:title="@string/action_logout"
         android:icon="@drawable/icon_logout"
-        app:showAsAction="always"></item>
+        app:showAsAction="always" />
+
+
 </menu>

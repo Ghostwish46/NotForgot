@@ -91,6 +91,11 @@ class TaskRepository(
     suspend fun deleteTask(task: Task): HttpResponseCode {
         return withContext(Dispatchers.IO)
         {
+            if (task.entityState == EntityState.ADDED)
+            {
+                taskDao.delete(task)
+                HttpResponseCode.getByCode(200)
+            }
             val taskRequest = apiService
                 .deleteTaskAsync(task.id, token)
             try {

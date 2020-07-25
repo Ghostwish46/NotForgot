@@ -99,7 +99,9 @@ class RegistrationActivity : AppCompatActivity() {
                         if (registerResult) {
                             val intentMain =
                                 Intent(this@RegistrationActivity, MainActivity::class.java)
+                            intentMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intentMain)
+                            finish()
                         } else {
                             Toast.makeText(
                                 this@RegistrationActivity,

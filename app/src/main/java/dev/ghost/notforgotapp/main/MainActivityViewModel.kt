@@ -86,7 +86,7 @@ class MainActivityViewModel(
 
 
 
-    suspend fun syncTasks()
+    suspend fun syncTasks():Boolean
     {
         val currentTasks = unSynchronizedTasks.value
         if (currentTasks != null) {
@@ -109,6 +109,7 @@ class MainActivityViewModel(
                 }
             }
         }
+        return true
     }
 
 }

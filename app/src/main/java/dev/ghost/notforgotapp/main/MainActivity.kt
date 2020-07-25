@@ -45,24 +45,38 @@ class MainActivity : AppCompatActivity() {
     lateinit var connectivityManager: ConnectivityManager
     lateinit var networkCallback: NetworkCallback
 
+    var connectionItem:MenuItem? = null
+
     private lateinit var mainActivityViewModel: MainActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
-
         mainActivityViewModel = ViewModelProvider(this)
             .get(MainActivityViewModel(application)::class.java)
+        syncTasks()
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         networkCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
+                mainActivityViewModel.viewModelScope.launch(Dispatchers.Main) {
+                    val iconConnection = getDrawable(R.drawable.icon_connection)
+                    iconConnection?.setTint(getColor(R.color.colorGreen))
+                    connectionItem?.icon = iconConnection
+                }
+
+
                 syncTasks()
             }
 
             override fun onLost(network: Network) {
+                mainActivityViewModel.viewModelScope.launch(Dispatchers.Main) {
+                    val iconConnection = getDrawable(R.drawable.icon_connection)
+                    iconConnection?.setTint(getColor(R.color.colorRed))
+                    connectionItem?.icon = iconConnection
+                }
             }
         }
 
@@ -140,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
             mainActivityViewModel.mainActivityAdapter.updateData(it)
         })
-        mainActivityViewModel.unSynchronizedTasks.observe(this, Observer {  })
+        mainActivityViewModel.unSynchronizedTasks.observe(this, Observer { })
 
         mainActivityViewModel.loadingState.observe(this, Observer {
             when (it.status) {
@@ -183,10 +197,15 @@ class MainActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.IO)
                 {
-                    mainActivityViewModel.syncTasks()
+                    val result = mainActivityViewModel.syncTasks()
+                    withContext(Dispatchers.Main)
+                    {
+                        if (result)
+                            alertDialog.dismiss()
+                    }
                 }
 
-                alertDialog.dismiss()
+
             }
         }
     }
@@ -198,6 +217,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
+        connectionItem = menu?.findItem(R.id.action_connection)
         return true
     }
 
@@ -208,12 +228,12 @@ class MainActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO)
                     {
                         mainActivityViewModel.clearAllData()
-                    }
-                    withContext(Dispatchers.Main)
-                    {
-                        val intentLogin = Intent(this@MainActivity, LoginActivity::class.java)
-                        intentLogin.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                        startActivity(intentLogin)
+                        withContext(Dispatchers.Main)
+                        {
+                            val intentLogin = Intent(this@MainActivity, LoginActivity::class.java)
+                            startActivity(intentLogin)
+                            finish()
+                        }
                     }
                 }
 

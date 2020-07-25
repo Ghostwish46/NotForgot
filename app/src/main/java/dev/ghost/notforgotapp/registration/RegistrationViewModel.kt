@@ -3,6 +3,7 @@ package dev.ghost.notforgotapp.registration
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.util.Patterns
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import dev.ghost.notforgotapp.entities.User
@@ -10,13 +11,12 @@ import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.main.MainActivity
 
 class RegistrationViewModel(application: Application) : AndroidViewModel(application) {
-    val currentUser:User = User()
+    val currentUser: User = User()
 
     private val apiService = ApiUtils.apiService
     private val sharedPreferences = application.getSharedPreferences("Dagger", Context.MODE_PRIVATE)
 
-    suspend fun register():Boolean
-    {
+    suspend fun register(): Boolean {
         val loginRequest = apiService.registerPostAsync(
             currentUser.mail,
             currentUser.name,
@@ -39,10 +39,10 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
 
     fun checkMail(): Int? {
-        return if (currentUser.mail.isBlank())
-            dev.ghost.notforgotapp.R.string.error_blank_mail
-        else
+        return if (!currentUser.mail.isBlank() && Patterns.EMAIL_ADDRESS.matcher(currentUser.mail).matches())
             null
+        else
+            dev.ghost.notforgotapp.R.string.error_blank_mail
     }
 
     fun checkPassword(): Int? {
