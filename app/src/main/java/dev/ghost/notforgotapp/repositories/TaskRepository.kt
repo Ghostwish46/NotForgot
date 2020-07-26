@@ -10,6 +10,7 @@ import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import kotlin.coroutines.Continuation
 
 
 class TaskRepository(
@@ -54,6 +55,7 @@ class TaskRepository(
                     taskDao.add(task)
                 }
                 HttpResponseCode.getByCode(response.code())
+
             } catch (ex: Exception) {
                 task.entityState = EntityState.ADDED
                 taskDao.add(task)

@@ -32,6 +32,10 @@
     <string name="text_not_done">Не сделано</string>
     <string name="text_unspecified">Не указано</string>
 
+    <string name="text_loading">Идёт загрузка данных</string>
+    <string name="text_loaded">Загрузка завершена</string>
+    <string name="text_error">Произошла ошибка загрузки</string>
+
     <string name="text_task_saved_successfully">Дело успешно сохранено.</string>
     <string name="text_category_saved_successfully">Категория успешно добавлена.</string>
     <string name="text_api_saving_error">Данные сохранены локально.</string>

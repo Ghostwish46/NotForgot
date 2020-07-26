@@ -8,6 +8,7 @@ import dev.ghost.notforgotapp.main.MainActivity
 import dev.ghost.notforgotapp.modules.StorageModule
 import javax.inject.Singleton
 
+// NOT IMPLEMENTED!
 @Singleton
 @Component(modules = [StorageModule::class])
 interface AppComponent {
@@ -17,7 +18,6 @@ interface AppComponent {
     interface Factory {
         // With @BindsInstance, the Context passed in will be available in the graph
         fun create(@BindsInstance context: Context)
-//                   , @BindsInstance token:String)
                 : AppComponent
     }
 

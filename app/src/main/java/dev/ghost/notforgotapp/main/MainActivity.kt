@@ -3,6 +3,7 @@ package dev.ghost.notforgotapp.main
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
@@ -19,21 +20,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import dev.ghost.notforgotapp.App
 import dev.ghost.notforgotapp.R
 import dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority
-import dev.ghost.notforgotapp.helpers.AppDatabase
 import dev.ghost.notforgotapp.helpers.HttpResponseCode
 import dev.ghost.notforgotapp.helpers.Status
 import dev.ghost.notforgotapp.login.LoginActivity
-import dev.ghost.notforgotapp.login.LoginViewModel
-import dev.ghost.notforgotapp.storage.SharedPreferencesStorage
 import dev.ghost.notforgotapp.taskedit.TaskEditActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var connectivityManager: ConnectivityManager
     lateinit var networkCallback: NetworkCallback
 
-    var connectionItem:MenuItem? = null
+    var connectionItem: MenuItem? = null
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,34 +55,29 @@ class MainActivity : AppCompatActivity() {
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+        // Callback to handle connection's changing.
         networkCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
                 mainActivityViewModel.viewModelScope.launch(Dispatchers.Main) {
-                    val iconConnection = getDrawable(R.drawable.icon_connection)
-                    iconConnection?.setTint(getColor(R.color.colorGreen))
-                    connectionItem?.icon = iconConnection
+                    connectionItem?.icon = getConnectionDrawable(true)
                 }
-
-
                 syncTasks()
             }
 
             override fun onLost(network: Network) {
                 mainActivityViewModel.viewModelScope.launch(Dispatchers.Main) {
-                    val iconConnection = getDrawable(R.drawable.icon_connection)
-                    iconConnection?.setTint(getColor(R.color.colorRed))
-                    connectionItem?.icon = iconConnection
+                    connectionItem?.icon = getConnectionDrawable(false)
                 }
             }
         }
 
-
-        mainActivityViewModel.mainActivityAdapter = TaskAdapter(this, mainActivityViewModel)
+        mainActivityViewModel.mainActivityAdapter = ItemsAdapter(this, mainActivityViewModel)
         recyclerMainTasks.adapter = mainActivityViewModel.mainActivityAdapter
         recyclerMainTasks.layoutManager = LinearLayoutManager(this)
 
         val taskTouchHelperCallBack =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+                // Disabled moving.
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
@@ -95,73 +86,77 @@ class MainActivity : AppCompatActivity() {
                     return false
                 }
 
+                // Task's removing on swipe.
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val item =
-                        (mainActivityViewModel.mainActivityAdapter.getItemByViewHolder(viewHolder))
-
-                    if (item is TaskWithCategoryAndPriority)
-                        mainActivityViewModel.viewModelScope
-                            .launch {
-                                val result = mainActivityViewModel.removeTask(item.task)
-                                if (result == HttpResponseCode.OK) {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        getString(R.string.text_task_deleted),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        getString(result.getErrorMessage()) + " "
-                                                + getString(R.string.text_task_deleted_locally),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                    mainActivityViewModel.viewModelScope
+                        .launch {
+                            val result = mainActivityViewModel.removeTask(viewHolder)
+                            if (result == HttpResponseCode.OK) {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    getString(R.string.text_task_deleted),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    getString(result.getErrorMessage()) + " "
+                                            + getString(R.string.text_task_deleted_locally),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+                        }
                 }
 
+                // Setting swipe flags for task's removing and
+                // disabling actions for category type.
                 override fun getMovementFlags(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder
                 ): Int {
-                    return if (viewHolder.itemViewType == 1) {
-                        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                        val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-                        ItemTouchHelper.Callback.makeMovementFlags(
-                            dragFlags,
-                            swipeFlags
-                        )
-                    } else {
-                        val dragFlags = 0
-                        val swipeFlags = 0
-                        ItemTouchHelper.Callback.makeMovementFlags(
-                            dragFlags,
-                            swipeFlags
-                        )
+                    var dragFlags = 0
+                    var swipeFlags = 0
+                    if (viewHolder.itemViewType == 1) {
+                        dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                        swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
                     }
+                    return ItemTouchHelper.Callback.makeMovementFlags(
+                        dragFlags,
+                        swipeFlags
+                    )
                 }
             }
 
         val taskTouchHelper = ItemTouchHelper(taskTouchHelperCallBack)
         taskTouchHelper.attachToRecyclerView(recyclerMainTasks)
 
+        // LiveData observing.
+        mainActivityViewModel.unSynchronizedTasks.observe(this, Observer { })
         mainActivityViewModel.tasksFullInfoData.observe(this, Observer {
             includeNoTasks.visibility =
                 if (it.isEmpty())
                     View.VISIBLE
                 else
                     View.INVISIBLE
-
             mainActivityViewModel.mainActivityAdapter.updateData(it)
         })
-        mainActivityViewModel.unSynchronizedTasks.observe(this, Observer { })
 
         mainActivityViewModel.loadingState.observe(this, Observer {
             when (it.status) {
-                Status.RUNNING -> Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
-
-                else -> {
+                Status.RUNNING -> Toast.makeText(
+                    this,
+                    getString(R.string.text_loading),
+                    Toast.LENGTH_SHORT
+                ).show()
+                Status.SUCCESS -> {
+                    Toast.makeText(this, getString(R.string.text_loaded), Toast.LENGTH_SHORT).show()
                     swipeRefreshMain.isRefreshing = false
+                    connectionItem?.icon = getConnectionDrawable(true)
+                }
+                else -> {
+                    Toast.makeText(this, getString(R.string.text_error), Toast.LENGTH_SHORT).show()
+                    swipeRefreshMain.isRefreshing = false
+                    connectionItem?.icon = getConnectionDrawable(false)
                 }
             }
         })
@@ -169,6 +164,17 @@ class MainActivity : AppCompatActivity() {
         swipeRefreshMain.setOnRefreshListener {
             mainActivityViewModel.fetchTasks()
         }
+    }
+
+    // Get drawable about connection state
+    fun getConnectionDrawable(isAvailable: Boolean): Drawable {
+        val iconConnection = getDrawable(R.drawable.icon_connection)!!
+        if (isAvailable)
+            iconConnection.setTint(getColor(R.color.colorGreen))
+        else
+            iconConnection.setTint(getColor(R.color.colorRed))
+
+        return iconConnection
     }
 
     override fun onResume() {
@@ -204,8 +210,6 @@ class MainActivity : AppCompatActivity() {
                             alertDialog.dismiss()
                     }
                 }
-
-
             }
         }
     }
@@ -218,6 +222,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         connectionItem = menu?.findItem(R.id.action_connection)
+
         return true
     }
 

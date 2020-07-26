@@ -6,5 +6,4 @@ data class DeleteTaskResponse(
     val message: String,
     @SerializedName("task_id")
     val taskId: Int
-) {
-}
+)

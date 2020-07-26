@@ -22,7 +22,8 @@ import java.text.SimpleDateFormat
         parentColumns = ["id"],
         childColumns = ["categoryId"]
     )]
-        , indices = [Index("categoryId"), Index("priorityId")])
+    , indices = [Index("categoryId"), Index("priorityId")]
+)
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var title: String = "",
@@ -35,7 +36,7 @@ data class Task(
     @SerializedName("priority_id")
     var priorityId: Int = 0,
     var entityState: EntityState = EntityState.UNCHANGED
-) :ItemForList, Parcelable {
+) : ItemForList, Parcelable {
     @Ignore
     override var type: ItemType = ItemType.Task
 
@@ -48,28 +49,23 @@ data class Task(
     var priority: Priority? = null
 
 
-    fun updateKeys(){
+    fun updateKeys() {
         categoryId = category?.id ?: 0
         priorityId = priority?.id ?: 0
     }
 
-    fun updateEntities(category: Category, priority: Priority)
-    {
+    fun updateEntities(category: Category, priority: Priority) {
         this.category = category
         this.priority = priority
         categoryId = category.id
         priorityId = priority.id
     }
 
-    fun getDateString(value:Long) :String
-    {
-        val format:SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy")
-        return format.format(Date(value*1000))
+    fun getDateString(value: Long): String {
+        val format: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy")
+        return format.format(Date(value * 1000))
     }
 
-    fun getDoneBoolean():Boolean
-    {
-        return done == 1
-    }
+    fun getDoneBoolean() = done == 1
 
 }

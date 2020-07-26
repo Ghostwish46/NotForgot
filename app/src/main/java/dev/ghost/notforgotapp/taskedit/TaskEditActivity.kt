@@ -103,9 +103,7 @@ class TaskEditActivity : AppCompatActivity() {
                         (parent.getItemAtPosition(pos) as Category).id
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // Another interface callback
-                }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
 
         spinnerTaskEditPriority.onItemSelectedListener =
@@ -120,10 +118,7 @@ class TaskEditActivity : AppCompatActivity() {
                         (parent.getItemAtPosition(pos) as Priority).id
                 }
 
-
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // Another interface callback
-                }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
 
         editTextTaskEditDescription.doAfterTextChanged {
@@ -193,38 +188,37 @@ class TaskEditActivity : AppCompatActivity() {
         }
         bindingAddCategory.category = taskEditViewModel.categoryForAdding
 
-        val alertDialog =
-            AlertDialog.Builder(this, R.style.DialogTheme).setView(bindingAddCategory.root)
-                .setPositiveButton(R.string.action_save)
-                { dialog, which ->
-                    taskEditViewModel.viewModelScope.launch {
-                        withContext(Dispatchers.IO)
+        AlertDialog.Builder(this, R.style.DialogTheme).setView(bindingAddCategory.root)
+            .setPositiveButton(R.string.action_save)
+            { dialog, which ->
+                taskEditViewModel.viewModelScope.launch {
+                    withContext(Dispatchers.IO)
+                    {
+                        val result = taskEditViewModel.addCategory()
+                        withContext(Dispatchers.Main)
                         {
-                            val result = taskEditViewModel.addCategory()
-                            withContext(Dispatchers.Main)
-                            {
-                                if (result == HttpResponseCode.OK) {
-                                    Toast.makeText(
-                                        this@TaskEditActivity,
-                                        getString(R.string.text_category_saved_successfully),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    Toast.makeText(
-                                        this@TaskEditActivity,
-                                        getString(result.getErrorMessage()),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                taskEditViewModel.categoryForAdding.name = ""
-                                dialog.dismiss()
+                            if (result == HttpResponseCode.OK) {
+                                Toast.makeText(
+                                    this@TaskEditActivity,
+                                    getString(R.string.text_category_saved_successfully),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    this@TaskEditActivity,
+                                    getString(result.getErrorMessage()),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+                            taskEditViewModel.categoryForAdding.name = ""
+                            dialog.dismiss()
                         }
                     }
                 }
-                .setNegativeButton(R.string.action_cancel)
-                { dialog, which -> dialog.dismiss() }
-                .show()
+            }
+            .setNegativeButton(R.string.action_cancel)
+            { dialog, which -> dialog.dismiss() }
+            .show()
     }
 
     private fun hasNoErrors(): Boolean {

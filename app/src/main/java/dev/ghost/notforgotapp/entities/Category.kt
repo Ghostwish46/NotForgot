@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import dev.ghost.notforgotapp.helpers.ItemType
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 
@@ -14,11 +15,9 @@ data class Category(
     @PrimaryKey
     var id: Int = 0,
     var name: String = ""):ItemForList, Parcelable {
+    @IgnoredOnParcel
     @Ignore
     override var type: ItemType = ItemType.Category
 
-
-    override fun toString(): String {
-        return name
-    }
+    override fun toString() = name
 }

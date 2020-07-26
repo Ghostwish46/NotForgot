@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingBottom="64dp"
-                tools:listitem="@layout/view_holder_task_content" />
+                tools:listitem="@layout/item_task" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -3,6 +3,7 @@ package dev.ghost.notforgotapp.main
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import dev.ghost.notforgotapp.entities.*
 import dev.ghost.notforgotapp.helpers.ApiUtils
 import dev.ghost.notforgotapp.helpers.AppDatabase
@@ -24,7 +25,7 @@ class MainActivityViewModel(
     private val categoryRepository: CategoryRepository
     private val sharedPreferences = application.getSharedPreferences("Dagger", Context.MODE_PRIVATE)
 
-    lateinit var mainActivityAdapter: TaskAdapter
+    lateinit var mainActivityAdapter: ItemsAdapter
 
     val tasksFullInfoData: LiveData<List<TaskWithCategoryAndPriority>>
     val unSynchronizedTasks: LiveData<List<TaskWithCategoryAndPriority>>
@@ -68,8 +69,13 @@ class MainActivityViewModel(
         }
     }
 
-    suspend fun removeTask(task: Task): HttpResponseCode {
-        return taskRepository.deleteTask(task)
+    // Remove task by selected VH
+    suspend fun removeTask(holder: RecyclerView.ViewHolder): HttpResponseCode {
+        val currentFullTask = mainActivityAdapter.getItemByViewHolder(holder)
+        return if (currentFullTask is TaskWithCategoryAndPriority)
+            taskRepository.deleteTask(currentFullTask.task)
+        else
+            HttpResponseCode.CODE_EXCEPTION
     }
 
     suspend fun changeTask(task: Task): HttpResponseCode {
@@ -85,25 +91,19 @@ class MainActivityViewModel(
     }
 
 
-
-    suspend fun syncTasks():Boolean
-    {
+    // Get all unSynchronized tasks and send them to the server.
+    suspend fun syncTasks(): Boolean {
         val currentTasks = unSynchronizedTasks.value
         if (currentTasks != null) {
-            for (task in currentTasks)
-            {
-                when (task.task.entityState)
-                {
-                    EntityState.DELETED ->
-                    {
+            for (task in currentTasks) {
+                when (task.task.entityState) {
+                    EntityState.DELETED -> {
                         taskRepository.deleteTask(task.task)
                     }
-                    EntityState.ADDED ->
-                    {
+                    EntityState.ADDED -> {
                         taskRepository.postTask(task.task)
                     }
-                    EntityState.MODIFIED ->
-                    {
+                    EntityState.MODIFIED -> {
                         taskRepository.patchTask(task.task)
                     }
                 }
@@ -111,5 +111,4 @@ class MainActivityViewModel(
         }
         return true
     }
-
 }

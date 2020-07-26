@@ -10,8 +10,4 @@ data class CategoryAndTasks(
     val category: Category,
     @Relation(parentColumn = "id", entityColumn = "categoryId", entity = Task::class)
     val tasks: List<Task>
-
 )
-{
-
-}

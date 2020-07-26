@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-
+        <import type="android.graphics.Color"></import>
+        <variable
+            name="taskFullInfo"
+            type="dev.ghost.notforgotapp.entities.TaskWithCategoryAndPriority" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,10 +18,11 @@
             android:id="@+id/textViewTaskContentPriorityColor"
             android:layout_width="10dp"
             android:layout_height="0dp"
-            android:background="@color/colorRed"
+            android:background="@{Color.parseColor(taskFullInfo.priority.color)}"
             app:layout_constraintBottom_toTopOf="@+id/space"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+        />
 
         <TextView
             android:id="@+id/textViewTaskContentName"
@@ -34,7 +37,8 @@
             app:layout_constraintEnd_toStartOf="@+id/checkBoxTaskContentDone"
             app:layout_constraintStart_toEndOf="@+id/textViewTaskContentPriorityColor"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Погладить котика"/>
+            tools:text="Погладить котика"
+            android:text="@{taskFullInfo.task.title}"/>
 
         <TextView
             android:id="@+id/textViewTaskContentDescription"
@@ -48,7 +52,8 @@
             app:layout_constraintEnd_toStartOf="@+id/checkBoxTaskContentDone"
             app:layout_constraintStart_toEndOf="@+id/textViewTaskContentPriorityColor"
             app:layout_constraintTop_toBottomOf="@+id/textViewTaskContentName"
-            tools:text="Нежно и аккуратно" />
+            tools:text="Нежно и аккуратно"
+            android:text="@{taskFullInfo.task.description}"/>
 
         <CheckBox
             android:id="@+id/checkBoxTaskContentDone"
@@ -56,10 +61,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_normal"
             android:buttonTint="@color/colorPrimary"
-            android:checked="true"
+            android:checked="@{taskFullInfo.task.getDoneBoolean()}"
             app:layout_constraintBottom_toBottomOf="@+id/textViewTaskContentPriorityColor"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewTaskContentPriorityColor" />
+            app:layout_constraintTop_toTopOf="@+id/textViewTaskContentPriorityColor"
+           />
 
         <Space
             android:id="@+id/space"

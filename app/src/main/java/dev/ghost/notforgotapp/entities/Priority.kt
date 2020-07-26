@@ -20,7 +20,5 @@ data class Priority(
         return Color.parseColor(color!!)
     }
 
-    override fun toString(): String {
-        return name
-    }
+    override fun toString() = name
 }
